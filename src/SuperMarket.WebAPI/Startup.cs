@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using SuperMarket.Infrastructure.Application;
 using SuperMarket.Persistence.EF;
 using SuperMarket.Persistence.EF.Categories;
+using SuperMarket.Services.Categories;
 using Service = Autofac.Core.Service;
 
 namespace SuperMarket.WebAPI
