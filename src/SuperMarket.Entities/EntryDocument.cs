@@ -6,7 +6,6 @@ namespace SuperMarket.Entities
     {
         public string Name { get; set; }
         public int BuyPrice { get; set; }
-        public int Count { get; set; }
         public DateTime DateBuy { get; set; }
 
         public int GoodsId { get; set; }
