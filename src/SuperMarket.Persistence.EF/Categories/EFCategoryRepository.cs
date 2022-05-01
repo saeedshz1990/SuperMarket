@@ -1,6 +1,8 @@
-﻿namespace SuperMarket.Persistence.EF.Categories
+﻿using SuperMarket.Services.Categories.Contracts;
+
+namespace SuperMarket.Persistence.EF.Categories
 {
-    public class EFCategoryRepository
+    public class EFCategoryRepository :CategoryRepository
     {
     }
 }

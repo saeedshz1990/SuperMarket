@@ -1,6 +1,8 @@
-﻿namespace SuperMarket.Persistence.EF.EntryDocuments
+﻿using SuperMarket.Services.EntryDocuments.Contracts;
+
+namespace SuperMarket.Persistence.EF.EntryDocuments
 {
-    public class EFEntryDocumentRepository
+    public class EFEntryDocumentRepository :EntryDocumentRepostiory
     {
     }
 }
