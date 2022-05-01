@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace SuperMarket.Entities
+﻿namespace SuperMarket.Entities
 {
-    public class Goods :EntityBase
+    public class Goods : EntityBase
     {
-       
         public string Name { get; set; }
         public int Count { get; set; }
         public int MinimumInventory { get; set; }
@@ -19,6 +16,6 @@ namespace SuperMarket.Entities
 
         public int CategoryId { get; set; }
         public Category Category { get; set; }
-        
+
     }
 }
