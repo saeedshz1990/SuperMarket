@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using BookStore.Infrastructure;
+using SuperMarket.Infrastructure;
 
 namespace SuperMarkets.Specs
 {

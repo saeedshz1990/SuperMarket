@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using SuperMarket.Persistence.EF;
 using Xunit;
 
 namespace SuperMarkets.Specs.Infrastructure
@@ -20,7 +18,7 @@ namespace SuperMarkets.Specs.Infrastructure
         {
             var settings = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appSettings.json", optional: true, reloadOnChange: false)
+                .AddJsonFile("appSettingsTest.json", optional: true, reloadOnChange: false)
                 .AddEnvironmentVariables()
                 .AddCommandLine(Environment.GetCommandLineArgs())
                 .Build();
@@ -33,7 +31,7 @@ namespace SuperMarkets.Specs.Infrastructure
 
     public class TestSettings
     {
-        public DbContextOptions<EFDataContext> DbConnectionString { get; set; }
+        public string DbConnectionString { get; set; }
     }
 
     [CollectionDefinition(nameof(ConfigurationFixture), DisableParallelization = false)]

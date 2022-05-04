@@ -37,7 +37,7 @@ namespace SuperMarket.WebAPI
         {
             builder.RegisterType<EFDataContext>()
                 .WithParameter("connectionString", Configuration["ConnectionString"])
-                .AsSelf()
+                 .AsSelf()
                 .InstancePerLifetimeScope();
 
             builder.RegisterAssemblyTypes(typeof(EFCategoryRepository).Assembly)

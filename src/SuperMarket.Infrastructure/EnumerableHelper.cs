@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BookStore.Infrastructure
+namespace SuperMarket.Infrastructure
 {
     public static class EnumerableHelper
     {
