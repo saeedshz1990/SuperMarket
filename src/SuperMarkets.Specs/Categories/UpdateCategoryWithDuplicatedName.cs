@@ -17,8 +17,8 @@ namespace SuperMarkets.Specs.Categories
     [Scenario("تعریف دسته بندی")]
     [Feature("",
         AsA = "فروشنده ",
-        IWantTo = " دسته بندی کالا را مدیریت کنم  ",
-        InOrderTo = "کالاهای خود را دسته بندی کنم"
+        IWantTo = " دسته بندی کالا   ",
+        InOrderTo = "مدیریت دسته بندی"
     )]
     public class UpdateCategoryWithDuplicatedName:EFDataContextDatabaseFixture
     {
@@ -29,7 +29,6 @@ namespace SuperMarkets.Specs.Categories
         private Category _category;
         private UpdateCategoryDto _updateCategoryDto;
         Action expected;
-
         
         public UpdateCategoryWithDuplicatedName(ConfigurationFixture configuration) : base(configuration)
         {
@@ -38,6 +37,7 @@ namespace SuperMarkets.Specs.Categories
             _categoryRepository = new EFCategoryRepository(_context);
             _sut = new CategoryAppService(_unitOfWork, _categoryRepository);
         }
+        
         [Given("دسته بندی با عنوان 'لبنیات'در فهرست دسته بندی کالا وجود دارد")]
         public void Given()
         {
@@ -48,18 +48,18 @@ namespace SuperMarkets.Specs.Categories
             _context.Manipulate(_ => _.Categories.Add(_category));
         }
 
-        [Given("دسته بندی با عنوان 'لبنیات'در فهرست دسته بندی کالا وجود دارد")]
+        [Given("دسته بندی با عنوان 'خشکبار’ 'در فهرست دسته بندی کالا وجود دارد")]
         public void GivenAnd()
         {
             _category = new Category
             {
-                Name = "لبنیات"
+                Name = "خشکبار’ "
             };
 
             _context.Manipulate(_ => _.Categories.Add(_category));
         }
 
-        [When("دسته بندی با عنوان 'لبنیات' را به 'خشکبار'ویرایش میکنم")]
+        [When("دسته بندی با عنوان 'خشکبار’ ' را به 'لبنیات'ویرایش میکنم")]
         public void When()
         {
             _updateCategoryDto = new UpdateCategoryDto
@@ -69,6 +69,7 @@ namespace SuperMarkets.Specs.Categories
 
             expected = () => _sut.Update(_category.Id, _updateCategoryDto);
         }
+        
         [Then("یک دسته بندی با عنوان 'لبنیات' باید در فهرست دسته بندی ها وجود داشته باشد")]
         public void Then()
         {

@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 using FluentAssertions;
-using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Application;
-using SuperMarket.Infrastructure.Test;
 using SuperMarket.Persistence.EF;
 using SuperMarket.Persistence.EF.Categories;
 using SuperMarket.Services.Categories;
@@ -16,8 +14,8 @@ namespace SuperMarkets.Specs.Categories
     [Scenario("تعریف دسته بندی")]
     [Feature("",
         AsA = "فروشنده ",
-        IWantTo = " دسته بندی کالا را مدیریت کنم  ",
-        InOrderTo = "کالاهای خود را دسته بندی کنم"
+        IWantTo = " دسته بندی کالا   ",
+        InOrderTo = "مدیریت دسته بندی"
     )]
     public class AddCategory : EFDataContextDatabaseFixture
     {
@@ -66,6 +64,5 @@ namespace SuperMarkets.Specs.Categories
             When();
             Then();
         }
-        
     }
 }

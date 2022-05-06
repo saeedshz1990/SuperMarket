@@ -30,7 +30,8 @@ namespace SuperMarkets.Specs.Categories
         private Category _category;
         private AddCategoryDto _addCategoryDto;
         Action expected;
-        
+        private Goods _goods;
+
         public DeleteCategoryWithGoods(ConfigurationFixture configuration) : base(configuration)
         {
             _context = CreateDataContext();
@@ -50,10 +51,20 @@ namespace SuperMarkets.Specs.Categories
             _context.Manipulate(_ => _.Categories.Add(_category));
         }
 
-        [And("کالایی با عنوان 'ماست کاله'و قیمت'5000' و تعداد '5' در دسته بندی 'لبنیات' وجود دارد")]
+        [And("کالایی با عنوان ‘ماست رامک’  با قیمت فروش’۲۰۰۰’  با کد کالا انحصاری’YR-190’   با موجودی ‘۱۰’ در دسته بندی کالا موجود می باشد")]
         public void GivenAnd()
         {
-           //after Goods are added in project then  here completed but now Skipped
+              _goods = new Goods
+              {
+                  Name = "ماست رامک",
+                  SalesPrice = 2000,
+                  MinimumInventory = 5,
+                  Count = 10,
+                  UniqueCode = "YR-190",
+                  CategoryId = _category.Id
+              };
+
+            _context.Manipulate(_ => _.Goods.Add(_goods));
         }
 
         [When("دسته بندی با عنوان 'لبنیات' را حذف میکنیم")]
@@ -69,7 +80,7 @@ namespace SuperMarkets.Specs.Categories
             _context.Categories.Should().Contain(_ => _.Id == _category.Id);
         }
 
-        [And("خطایی با عنوان 'کالا در این دسته بندی وجود دارد' باید ارسال شود")]
+        [And("خطایی با عنوان ‘امکان حذف بدلیل وجود کالا در این دسته امکان پذیر نمی باشد’  باید رخ دهد")]
         public void ThenAnd()
         {
             expected.Should().ThrowExactly<ThisCategoryHasGoodsException>();

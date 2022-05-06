@@ -9,7 +9,8 @@ namespace SuperMarket.Entities
         {
             Goods = new HashSet<Goods>();
         }
-        public string Name { get; set; }
+
+        public int GoodsCount{ get; set; }
         public int BuyPrice { get; set; }
         public DateTime DateBuy { get; set; }
 

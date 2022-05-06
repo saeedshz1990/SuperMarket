@@ -15,10 +15,6 @@ namespace SuperMarket.Persistence.EF.EntryDocuments
             _.Property(x => x.Id)
                 .ValueGeneratedOnAdd();
 
-            _.Property(x => x.Name)
-                .HasMaxLength(50)
-                .IsRequired();
-
             _.Property(x => x.BuyPrice)
                 .IsRequired();
 
@@ -30,7 +26,8 @@ namespace SuperMarket.Persistence.EF.EntryDocuments
 
             _.HasMany(x => x.Goods)
                 .WithOne(x => x.EntryDocuments)
-                .HasForeignKey(x => x.EntryDocumentId);
+                .HasForeignKey(x => x.EntryDocumentId)
+                .OnDelete(DeleteBehavior.ClientNoAction);
 
         }
     }

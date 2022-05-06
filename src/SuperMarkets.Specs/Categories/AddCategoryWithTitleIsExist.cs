@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using FluentAssertions;
 using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Application;
@@ -15,11 +14,11 @@ using static SuperMarkets.Specs.BDDHelper;
 
 namespace SuperMarkets.Specs.Categories
 {
-    [Scenario("تعریف دسته بندی")]
+    [Scenario("مدیریت دسته بندی")]
     [Feature("",
         AsA = "فروشنده ",
-        IWantTo = " دسته بندی کالا را مدیریت کنم  ",
-        InOrderTo = "کالاهای خود را دسته بندی کنم"
+        IWantTo = " دسته بندی کالا   ",
+        InOrderTo = "مدیریت دسته بندی"
     )]
     public class AddCategoryWithTitleIsExist : EFDataContextDatabaseFixture
     {
@@ -39,7 +38,7 @@ namespace SuperMarkets.Specs.Categories
             _sut = new CategoryAppService(_unitOfWork, _categoryRepository);
         }
 
-        [Given("دسته بندی با عنوان 'لبنیات'در فهرست دسته بندی کالا وجود دارد")]
+        [Given("یک دسته بندی با عنوان 'لبنیات'در فهرست دسته بندی کالا وجود دارد")]
         public void Given()
         {
             _firstCategory = new Category
@@ -49,7 +48,7 @@ namespace SuperMarkets.Specs.Categories
             _context.Manipulate(_ => _.Categories.Add(_firstCategory));
         }
 
-        [When("دسته بندی با عنوان ‘لبنیات’ تعریف می کنم")]
+        [When("دسته بندی جدیدی با عنوان ‘لبنیات’ تعریف می کنم")]
         public void When()
         {
             _secondCategory = new Category

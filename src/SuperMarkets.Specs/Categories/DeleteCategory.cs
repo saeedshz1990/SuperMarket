@@ -16,8 +16,8 @@ namespace SuperMarkets.Specs.Categories
     [Scenario("مدیریت دسته بندی")]
     [Feature("",
         AsA = "فروشنده ",
-        IWantTo = "دسته بندی کالا مدیریت کنم",
-        InOrderTo = "کالا های خود را دسته بندی کنم"
+        IWantTo = " دسته بندی کالا   ",
+        InOrderTo = "مدیریت دسته بندی"
     )]
     public class DeleteCategory :EFDataContextDatabaseFixture
     {
@@ -46,6 +46,7 @@ namespace SuperMarkets.Specs.Categories
 
             _context.Manipulate(_ => _.Categories.Add(_category));
         }
+        
         [When("دسته بندی با عنوان 'لبنیات' را حذف میکنیم")]
         public void When()
         {
@@ -60,7 +61,6 @@ namespace SuperMarkets.Specs.Categories
             _context.Categories.Count().Should().Be(0);
         }
 
-
         [Fact]
         public void Run()
         {
@@ -68,6 +68,5 @@ namespace SuperMarkets.Specs.Categories
             When();
             Then();
         }
-
     }
 }

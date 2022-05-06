@@ -13,5 +13,6 @@ namespace SuperMarket.Services.Categories.Contracts
         void Delete(int id);
         Category FindById(int id);
         void Update(int id, Category category);
+        bool FindCategoryById(int id);
     }
 }

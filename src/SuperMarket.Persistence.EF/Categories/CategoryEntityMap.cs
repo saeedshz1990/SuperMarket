@@ -18,10 +18,8 @@ namespace SuperMarket.Persistence.EF.Categories
             _.Property(x => x.Name)
                 .HasMaxLength(50).IsRequired();
 
+            
 
-            _.HasMany(x => x.Goods)
-                .WithOne(x => x.Category)
-                .HasForeignKey(x => x.CategoryId);
         }
     }
 }

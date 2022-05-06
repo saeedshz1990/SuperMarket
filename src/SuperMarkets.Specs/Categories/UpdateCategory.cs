@@ -14,8 +14,8 @@ namespace SuperMarkets.Specs.Categories
     [Scenario("تعریف دسته بندی")]
     [Feature("",
         AsA = "فروشنده ",
-        IWantTo = " دسته بندی کالا را مدیریت کنم  ",
-        InOrderTo = "کالاهای خود را دسته بندی کنم"
+        IWantTo = " دسته بندی کالا   ",
+        InOrderTo = "مدیریت دسته بندی"
     )]
     public class UpdateCategory :EFDataContextDatabaseFixture
     {
@@ -34,7 +34,7 @@ namespace SuperMarkets.Specs.Categories
             _sut = new CategoryAppService(_unitOfWork, _categoryRepository);
         }
 
-        [Given("دسته بندی با عنوان 'لبنیات'در فهرست دسته بندی کالا وجود دارد")]
+        [Given("یک دسته بندی با عنوان 'لبنیات'در فهرست دسته بندی کالا وجود دارد")]
         public void Given()
         {
             _category = new Category
@@ -55,7 +55,8 @@ namespace SuperMarkets.Specs.Categories
 
             _sut.Update(_category.Id, _updateCategoryDto);
         }
-        [Then("یک دسته بندی با عنوان 'خشکبار' باید در فهرست دسته بندی ها وجود داشته باشد")]
+        
+        [Then("یک دسته بندی با عنوان 'پروتئینی' باید در فهرست دسته بندی ها وجود داشته باشد")]
         public void Then()
         {
             _context.Categories
