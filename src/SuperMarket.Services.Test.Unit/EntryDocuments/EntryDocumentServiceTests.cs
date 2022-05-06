@@ -8,6 +8,9 @@ using SuperMarket.Persistence.EF.EntryDocuments;
 using SuperMarket.Services.EntryDocuments;
 using SuperMarket.Services.EntryDocuments.Contracts;
 using SuperMarket.Services.EntryDocuments.Exceptions;
+using SuperMarket.Test.Tools.Categories;
+using SuperMarket.Test.Tools.EntryDocumnets;
+using SuperMarket.Test.Tools.Goodses;
 using Xunit;
 
 namespace SuperMarket.Services.Test.Unit.EntryDocuments
@@ -35,27 +38,14 @@ namespace SuperMarket.Services.Test.Unit.EntryDocuments
         [Fact]
         public void Add_adds_EntryDocument_Properly()
         {
-            _category = new Category { Name = "خشکبار" };
+            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
-            _goods = new Goods
-            {
-                Name = "پسته بسته بندی قنبرزاده",
-                CategoryId = _category.Id,
-                SalesPrice = 10900,
-                MinimumInventory = 5,
-                Count = 17,
-                UniqueCode = "YU-987"
-            };
+            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
 
-            _addEntryDocumentDto = new AddEntryDocumentDto
-            {
-                GoodsId = _goods.Id,
-                GoodsCount = 5 + _goods.Count,
-                BuyPrice = _addEntryDocumentDto.BuyPrice,
-                DateBuy = DateTime.Now.Date,
-            };
+            _addEntryDocumentDto = CreateEntryDocumentsFactory.CreateAddEntryDocument(_goods.Id,
+                5 + _goods.Count, _addEntryDocumentDto.BuyPrice, _addEntryDocumentDto.DateBuy);
 
             _sut.Add(_addEntryDocumentDto);
 
@@ -65,27 +55,14 @@ namespace SuperMarket.Services.Test.Unit.EntryDocuments
         [Fact]
         public void ThrowException_When_GoodsId_NotFound()
         {
-            _category = new Category { Name = "خشکبار" };
+            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
-            _goods = new Goods
-            {
-                Name = "پسته بسته بندی قنبرزاده",
-                CategoryId = _category.Id,
-                SalesPrice = 10900,
-                MinimumInventory = 5,
-                Count = 17,
-                UniqueCode = "YU-987"
-            };
+            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
-            
-            _addEntryDocumentDto = new AddEntryDocumentDto
-            {
-                GoodsId = _goods.Id,
-                GoodsCount = 5 + _goods.Count,
-                BuyPrice = _addEntryDocumentDto.BuyPrice,
-                DateBuy = DateTime.Now.Date,
-            };
+
+            _addEntryDocumentDto = CreateEntryDocumentsFactory.CreateAddEntryDocument(_goods.Id,
+                5 + _goods.Count, _addEntryDocumentDto.BuyPrice, _addEntryDocumentDto.DateBuy);
 
             Action expected = () => _sut.Add(_addEntryDocumentDto);
             expected.Should().ThrowExactly<GoodIdNotFoundException>();
@@ -94,27 +71,14 @@ namespace SuperMarket.Services.Test.Unit.EntryDocuments
         [Fact]
         public void GetAll_getall_EntryDocument_properly()
         {
-            _category = new Category { Name = "خشکبار" };
+            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
-            _goods = new Goods
-            {
-                Name = "پسته بسته بندی قنبرزاده",
-                CategoryId = _category.Id,
-                SalesPrice = 10900,
-                MinimumInventory = 5,
-                Count = 17,
-                UniqueCode = "YU-987"
-            };
+            _goods = _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
 
-            _entryDocument = new EntryDocument
-            {
-                GoodsId = _goods.Id,
-                GoodsCount = 5 + _goods.Count,
-                BuyPrice = 12000,
-                DateBuy = DateTime.Now.Date,
-            };
+            _entryDocument = CreateEntryDocumentsFactory.CreateEntryDocument(_goods.Id,
+                5 + _goods.Count, _addEntryDocumentDto.BuyPrice, _addEntryDocumentDto.DateBuy);
 
             var expected = _sut.GetAll();
 
@@ -129,24 +93,14 @@ namespace SuperMarket.Services.Test.Unit.EntryDocuments
         public void Update_updates_EntryDocument_properly()
         {
 
-            _category = new Category { Name = "خشکبار" };
+            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
-            _goods = new Goods
-            {
-                Name = "پسته بسته بندی قنبرزاده",
-                CategoryId = _category.Id,
-                SalesPrice = 10900,
-                MinimumInventory = 5,
-                Count = 17,
-                UniqueCode = "YU-987"
-            };
+            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
 
-            _updateEntryDocumentDto = new UpdateEntryDocumentDto
-            {
-                GoodsCount=_updateEntryDocumentDto.GoodsCount
-            };
+            _updateEntryDocumentDto = CreateEntryDocumentsFactory
+                .CreateUpdateEntryDocumentDto(_goods.Id, _updateEntryDocumentDto.GoodsCount);
             _sut.Update(_entryDocument.Id, _updateEntryDocumentDto);
 
             _context.Should().Be(_updateEntryDocumentDto.GoodsCount);

@@ -11,6 +11,8 @@ using SuperMarket.Services.Categories.Contracts;
 using SuperMarket.Services.Goodses;
 using SuperMarket.Services.Goodses.Contracts;
 using SuperMarket.Services.Goodses.Exceptions;
+using SuperMarket.Test.Tools.Categories;
+using SuperMarket.Test.Tools.Goodses;
 using Xunit;
 
 namespace SuperMarket.Services.Test.Unit.Goodses
@@ -40,21 +42,10 @@ namespace SuperMarket.Services.Test.Unit.Goodses
         [Fact]
         public void Add_adds_Goods_Properly()
         {
-            _category = new Category
-            {
-                Name = "DummyCategory"
-            };
+            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
-            _addGoodsDto = new AddGoodsDto
-            {
-                Name = "ماست کاله",
-                SalesPrice = 5000,
-                MinimumInventory = 5,
-                Count = 10,
-                UniqueCode = "YK-142",
-                CategoryId = _category.Id,
-            };
+            _addGoodsDto = CreateGoodsFactory.CreateAddGoods(_category.Id);
             
          _sut.Add(_addGoodsDto);
 
@@ -71,36 +62,14 @@ namespace SuperMarket.Services.Test.Unit.Goodses
         [Fact]
         public void Add_ThrowException_When_DuplicateGoodsName()
         {
-            _category = new Category
-            {
-                Name = "DummyCategory"
-            };
+            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
-            _goods = new Goods
-            {
-                Name = "dummy",
-                CategoryId = _category.Id,
-                SalesPrice = 5000,
-                MinimumInventory = 5,
-                Count = 10,
-                UniqueCode = "dummy",
-                SalesInvoiceId = 1,
-                EntryDocumentId = 1
-            };
+            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
 
-            _addGoodsDto = new AddGoodsDto
-            {
-                Name = _goods.Name,
-                SalesPrice = _goods.SalesPrice,
-                MinimumInventory = _goods.MinimumInventory,
-                Count = 10,
-                UniqueCode = _goods.UniqueCode,
-                CategoryId = _goods.Category.Id,
-                SalesInvoiceId = 1,
-                EntryDocumentId = 1
-            };
+            _addGoodsDto= CreateGoodsFactory.CreateAddGoodsDto(_goods.Name, _goods.SalesPrice, 
+                _goods.MinimumInventory, _goods.Count, _goods.UniqueCode, _goods.CategoryId);
             Action expected = () => _sut.Add(_addGoodsDto);
             expected.Should().ThrowExactly<GoodsNameExistInThisCategoryException>();
         }
@@ -108,27 +77,9 @@ namespace SuperMarket.Services.Test.Unit.Goodses
         [Fact]
         public void Update_updates_Goods_Properly()
         {
-            _goods = new Goods
-            {
-                Name = "dummy",
-                CategoryId = 1,
-                SalesPrice = 5000,
-                MinimumInventory = 5,
-                Count = 10,
-                UniqueCode = "dummy",
-                SalesInvoiceId = 1,
-                EntryDocumentId = 1
-            };
+            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Add(_goods));
-            _updateGoodsDto = new UpdateGoodsDto
-            {
-                Name = "Updatedname",
-                CategoryId = _goods.CategoryId,
-                SalesPrice = 9000,
-                MinimumInventory = 10,
-                Count = 20,
-                UniqueCode = "Updateddummy",
-            };
+            _updateGoodsDto = CreateGoodsFactory.CreateUpdateGoods(_category.Id);
             _sut.Update(_goods.Id, _updateGoodsDto);
             var expected = _context.Goods.FirstOrDefault(_ => _.Id == _goods.Id);
             expected.Name.Should().Be(_updateGoodsDto.Name);
@@ -142,21 +93,10 @@ namespace SuperMarket.Services.Test.Unit.Goodses
         [Fact]
         public void Delete_deletes_Goods_Properly()
         {
-            _category = new Category
-            {
-                Name = "DummyCategory"
-            };
+            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
-            _goods = new Goods
-            {
-                Name = "dummy",
-                CategoryId = _category.Id,
-                SalesPrice = 5000,
-                MinimumInventory = 5,
-                Count = 10,
-                UniqueCode = "dummy",
-            };
+            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
 
             _sut.Delete(_goods.Id);

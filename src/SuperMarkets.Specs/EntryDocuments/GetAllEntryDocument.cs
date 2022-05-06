@@ -84,6 +84,7 @@ namespace SuperMarkets.Specs.EntryDocuments
             _addEntryDocumentDto = new AddEntryDocumentDto
             {
                 GoodsId = _goods.Id,
+                BuyPrice = 2000,
                 DateBuy = DateTime.Now.Date,
                 GoodsCount = 5
             };
