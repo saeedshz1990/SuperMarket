@@ -12,6 +12,7 @@ namespace SuperMarket.Services.Categories.Contracts
         IList<GetCategoryDto> GetAll();
         void Delete(int id);
         Category FindById(int id);
+        Category FindByName(string name);
         void Update(int id, Category category);
         bool FindCategoryById(int id);
     }

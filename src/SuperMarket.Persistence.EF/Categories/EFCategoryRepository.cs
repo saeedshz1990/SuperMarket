@@ -54,6 +54,11 @@ namespace SuperMarket.Persistence.EF.Categories
             return _context.Categories.FirstOrDefault(_ => _.Id == id);
         }
 
+        public Category FindByName(string name)
+        {
+            return _context.Categories.FirstOrDefault(_ => _.Name == name);
+        }
+
         public void Update(int id, Category category)
         {
             

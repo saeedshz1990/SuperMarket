@@ -32,10 +32,7 @@
     <ProjectReference Include="..\SuperMarket.Infrastructure\SuperMarket.Infrastructure.csproj" />
     <ProjectReference Include="..\SuperMarket.Persistence.EF\SuperMarket.Persistence.EF.csproj" />
     <ProjectReference Include="..\SuperMarket.Services\SuperMarket.Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="SalesInvoices\" />
+    <ProjectReference Include="..\SuperMarket.Test.Tools\SuperMarket.Test.Tools.csproj" />
   </ItemGroup>
 
   <ItemGroup>
