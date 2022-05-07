@@ -4,6 +4,7 @@ using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Application;
 using SuperMarket.Services.EntryDocuments.Contracts;
 using SuperMarket.Services.EntryDocuments.Exceptions;
+using SuperMarket.Services.Goodses.Contracts;
 
 namespace SuperMarket.Services.EntryDocuments
 {
@@ -11,18 +12,21 @@ namespace SuperMarket.Services.EntryDocuments
     {
         private readonly EntryDocumentRepository _entryDocumentRepository;
         private readonly UnitOfWork _unitOfWork;
+        private readonly GoodsRepository _goodsRepository;
 
         public EntryDocumentAppservice(UnitOfWork unitOfWork,
-            EntryDocumentRepository entryDocumentRepository)
+            EntryDocumentRepository entryDocumentRepository, GoodsRepository goodsRepository)
         {
             _unitOfWork = unitOfWork;
             _entryDocumentRepository = entryDocumentRepository;
+            _goodsRepository = goodsRepository;
         }
 
 
         public void Add(AddEntryDocumentDto dto)
         {
             var isGoodsIdExist = _entryDocumentRepository.GetByGoodsId(dto.GoodsId);
+
             if (isGoodsIdExist == null)
             {
                 throw new GoodIdNotFoundException();
@@ -35,6 +39,9 @@ namespace SuperMarket.Services.EntryDocuments
                 BuyPrice = dto.BuyPrice,
                 DateBuy = dto.DateBuy
             };
+            int goodsCount = _goodsRepository.FindById(dto.GoodsId).Count;
+            goodsCount += dto.GoodsCount;
+
             _entryDocumentRepository.Add(entryDocument);
             _unitOfWork.Commit();
         }
@@ -62,6 +69,13 @@ namespace SuperMarket.Services.EntryDocuments
             {
                 throw new EntryDocumentIdNotFoundException();
             }
+
+            Goods goods = _goodsRepository.FindById(id);
+
+            goods.Count = goods.Count
+                          + _entryDocumentRepository.GetById(id).GoodsCount
+                          + dto.GoodsCount;
+
             entryDocument.GoodsCount = dto.GoodsCount;
             _unitOfWork.Commit();
         }
