@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SQLitePCL;
 using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Application;
@@ -15,22 +16,35 @@ namespace SuperMarket.Services.SalesInvoices
         private readonly GoodsRepository _goodsRepository;
 
 
-
         public SalesInvoiceAppService(UnitOfWork unitOfWork,
             SalesInvoiceRepository salesInvoiceRepository, GoodsRepository goodsRepository)
         {
             _unitOfWork = unitOfWork;
             _salesInvoiceRepository = salesInvoiceRepository;
             _goodsRepository = goodsRepository;
+
         }
 
         public void Add(AddSalesInvoiceDto dto)
         {
-            var goodsIdCheck = _goodsRepository.GetById(dto.GoodsId);
-            if (goodsIdCheck==null)
+            //var goodsIdCheck = _goodsRepository.ExistGoodsIdCheck(dto.GoodsId);
+
+            //if (!goodsIdCheck )
+            //{
+            //    throw new GoodsIdNotFoundForSaleInvoicesException();//its warning
+            //}
+
+            var salesInvoices = new SalesInvoice
             {
-                throw new GoodsIdNotFoundForSaleInvoicesException();//its warning
-            }
+                GoodsId = dto.GoodsId,
+                Count = dto.Count,
+                SalesPrice = dto.SalesPrice,
+                SalesDate = dto.SalesDate,
+                CustomerName = dto.CustomerName,
+            };
+
+            _salesInvoiceRepository.Add(salesInvoices);
+            _unitOfWork.Commit();
         }
 
         public IList<GetSalesInvoiceDto> GetAll()
@@ -45,12 +59,12 @@ namespace SuperMarket.Services.SalesInvoices
             {
                 throw new SalesInvoiceNotFoundException();
             }
-            
-            Goods goodsId = _goodsRepository
-                .FindById(_salesInvoiceRepository.FindById(id)
-                    .GoodsId);
-            goodsId.Count = goodsId.Count + _salesInvoiceRepository.FindById(id).Count;
-            _goodsRepository.Update(goodsId.Id, goodsId);
+
+            //Goods goodsId = _goodsRepository
+            //    .FindById(_salesInvoiceRepository.FindById(id)
+            //        .GoodsId);
+            //goodsId.Count = goodsId.Count + _salesInvoiceRepository.FindById(id).Count;
+            //_goodsRepository.Update(goodsId.Id, goodsId);
             _salesInvoiceRepository.Delete(id);
             _unitOfWork.Commit();
         }
@@ -62,23 +76,21 @@ namespace SuperMarket.Services.SalesInvoices
 
         public void Update(int id, UpdateSalesInvoiceDto dto)
         {
-            var isCheckedExists = _salesInvoiceRepository.FindById(id);
-            if (isCheckedExists == null)
-            {
-                throw new SalesInvoiceNotFoundException();
-            }
+            var salesInvoices = _salesInvoiceRepository.FindById(id);
+            
+            //var isCheckedExists = _salesInvoiceRepository.FindById(id);
+            //if (isCheckedExists == null)
+            //{
+            //    throw new SalesInvoiceNotFoundException();
+            //}
+            //Goods goodsId = _goodsRepository
+            //    .FindById(_salesInvoiceRepository.FindById(id)
+            //        .GoodsId);
+            //goodsId.Count = goodsId.Count - _salesInvoiceRepository.FindById(id).Count;
+            //_goodsRepository.Update(goodsId.Id, goodsId);
 
-            Goods goodsId = _goodsRepository
-                .FindById(_salesInvoiceRepository.FindById(id)
-                    .GoodsId);
-            goodsId.Count = goodsId.Count - _salesInvoiceRepository.FindById(id).Count;
-
-            _goodsRepository.Update(goodsId.Id, goodsId);
-
-            var salesInvoice = _salesInvoiceRepository.FindById(id);
-            salesInvoice.GoodsId = dto.GoodsId;
-            salesInvoice.Count = dto.Count;
-            _salesInvoiceRepository.Update(salesInvoice);
+            salesInvoices.GoodsId = dto.GoodsId;
+            salesInvoices.Count = dto.Count;
             _unitOfWork.Commit();
         }
     }

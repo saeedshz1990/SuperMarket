@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using SuperMarket.Entities;
 using SuperMarket.Services.SalesInvoices.Contracts;
 
@@ -39,7 +40,7 @@ namespace SuperMarket.Persistence.EF.SalesInvoices
 
         public void Update(SalesInvoice salesInvoice)
         {
-       
+
         }
 
         public void Delete(int id)
@@ -50,7 +51,24 @@ namespace SuperMarket.Persistence.EF.SalesInvoices
 
         public SalesInvoice FindById(int id)
         {
-            return _context.SalesInvoices.FirstOrDefault(x => x.Id == id);
+            return _context.SalesInvoices
+                .Select(_ => new SalesInvoice
+                {
+                    Id = _.Id,
+                    CustomerName = _.CustomerName,
+                    Count = _.Count,
+                    SalesPrice = _.SalesPrice,
+                    SalesDate = _.SalesDate,
+                    GoodsId = _.GoodsId
+                    })
+                .FirstOrDefault(x => x.Id == id);
+
+
+        }
+
+        public bool GetBySalesInvoicesId(int id)
+        {
+            return _context.SalesInvoices.Any(x => x.Id == id);
         }
 
         public int FindByGoodsId(int goodsCategoryId)

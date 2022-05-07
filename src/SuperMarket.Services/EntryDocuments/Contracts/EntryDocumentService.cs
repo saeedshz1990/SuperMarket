@@ -9,7 +9,7 @@ namespace SuperMarket.Services.EntryDocuments.Contracts
     {
         void Add(AddEntryDocumentDto dto);
         EntryDocument GetById(int Id);
-        IList<GetEntryDocumentDto> GetByGoodsId(int goodsId);
+        IList<EntryDocument> GetByGoodsId(int goodsId);
         IList<GetEntryDocumentDto> GetAll();
         void Update(int id, UpdateEntryDocumentDto dto);
     }

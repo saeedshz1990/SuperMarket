@@ -39,8 +39,8 @@ namespace SuperMarket.Services.EntryDocuments
                 BuyPrice = dto.BuyPrice,
                 DateBuy = dto.DateBuy
             };
-            int goodsCount = _goodsRepository.FindById(dto.GoodsId).Count;
-            goodsCount += dto.GoodsCount;
+            //int goodsCount = _goodsRepository.FindById(dto.GoodsId).Count;
+            //goodsCount += dto.GoodsCount;
 
             _entryDocumentRepository.Add(entryDocument);
             _unitOfWork.Commit();
@@ -51,7 +51,7 @@ namespace SuperMarket.Services.EntryDocuments
             return _entryDocumentRepository.GetById(Id);
         }
 
-        public IList<GetEntryDocumentDto> GetByGoodsId(int goodsId)
+        public IList<EntryDocument> GetByGoodsId(int goodsId)
         {
             return _entryDocumentRepository.GetByGoodsId(goodsId);
         }

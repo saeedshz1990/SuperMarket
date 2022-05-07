@@ -8,6 +8,7 @@ using SuperMarket.Persistence.EF;
 using SuperMarket.Persistence.EF.Categories;
 using SuperMarket.Persistence.EF.SalesInvoices;
 using SuperMarket.Services.Categories.Contracts;
+using SuperMarket.Services.Goodses.Contracts;
 using SuperMarket.Services.SalesInvoices;
 using SuperMarket.Services.SalesInvoices.Contracts;
 using SuperMarket.Test.Tools.Categories;
@@ -34,12 +35,14 @@ namespace SuperMarkets.Specs.SalesInvoices
         private Goods _goods;
         private SalesInvoice _salesInvoice;
         private readonly CategoryRepository _categoryRepository;
+        private readonly GoodsRepository _goodsRepository;
+
         public DeleteSalesInvoice(ConfigurationFixture configuration) : base(configuration)
         {
             _context = CreateDataContext();
             _unitOfWork = new EFUnitOfWork(_context);
             _salesInvoiceRepository = new EFSalesInvoiceRepository(_context);
-            _sut = new SalesInvoiceAppService(_salesInvoiceRepository, _unitOfWork);
+            _sut = new SalesInvoiceAppService(_unitOfWork, _salesInvoiceRepository, _goodsRepository);
             _categoryRepository = new EFCategoryRepository(_context);
         }
 
@@ -59,7 +62,7 @@ namespace SuperMarkets.Specs.SalesInvoices
                 CustomerName = "Saeed Ansari",
                 SalesDate = DateTime.Now.Date,
                 SalesPrice = 2000,
-                GoodsId = 1,
+                GoodsId = _goods.Id,
                 Count = 3
             };
             _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
@@ -84,9 +87,7 @@ namespace SuperMarkets.Specs.SalesInvoices
 
         public void ThenAnd()
         {
-            int goodsId = _goodsRepository.FindById(_salesInvoice.GoodsId).GoodsId;
-            _context.Goods
-                .FirstOrDefault(_ => _.Id == goodsId).Should().Be(7);
+            _context.SalesInvoices.Should().HaveCount(0);
         }
 
 

@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Linq;
+using FluentAssertions;
 using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Application;
 using SuperMarket.Infrastructure.Test;
 using SuperMarket.Persistence.EF;
 using SuperMarket.Persistence.EF.Categories;
+using SuperMarket.Persistence.EF.Goodses;
 using SuperMarket.Persistence.EF.SalesInvoices;
 using SuperMarket.Services.Categories.Contracts;
+using SuperMarket.Services.Goodses.Contracts;
 using SuperMarket.Services.SalesInvoices;
 using SuperMarket.Services.SalesInvoices.Contracts;
 using SuperMarket.Test.Tools.Categories;
@@ -32,16 +35,18 @@ namespace SuperMarkets.Specs.SalesInvoices
         private Category _category;
         private Goods _goods;
         private SalesInvoice _salesInvoice;
+        private AddSalesInvoiceDto _addSalesInvoiceDto;
 
         private readonly CategoryRepository _categoryRepository;
-
+        private readonly GoodsRepository _goodsRepository;
         public AddSalesInvoice(ConfigurationFixture configuration) : base(configuration)
         {
             _context = CreateDataContext();
             _unitOfWork = new EFUnitOfWork(_context);
             _salesInvoiceRepository = new EFSalesInvoiceRepository(_context);
-            _sut = new SalesInvoiceAppService(_salesInvoiceRepository, _unitOfWork);
+            _sut = new SalesInvoiceAppService(_unitOfWork,_salesInvoiceRepository , _goodsRepository);
             _categoryRepository = new EFCategoryRepository(_context);
+            _goodsRepository = new EFGoodsRepository(_context);
         }
 
         [Given("الایی با کد '01' در فهرست کالا ها تعریف شده است و  6 عدد موجود است")]
@@ -59,30 +64,29 @@ namespace SuperMarkets.Specs.SalesInvoices
         [When("کالای 01 را در به تعداد 2 می فروشیم")]
         public void When()
         {
-            _salesInvoice = new SalesInvoice
+            _addSalesInvoiceDto = new AddSalesInvoiceDto
             {
                 CustomerName = "Saeed Ansari",
                 SalesDate = DateTime.Now.Date,
                 SalesPrice = 2000,
-                GoodsId = 1,
+                GoodsId = _goods.Id,
                 Count = 3
             };
 
-            _sut.Add(_salesInvoice);
+            _sut.Add(_addSalesInvoiceDto);
         }
         [Then("فروش کالا در لیست فروش موجود است")]
 
         public void Then()
         {
-            _context.SalesInvoices.Count(_ => _.GoodsId == 1 && _.Count == 2);
-
+            _context.SalesInvoices.Count(_ => _.GoodsId == _goods.Id && _.Count == _goods.Count);
         }
 
         [When("تعداد 4 کالا در لیست کالا ها باقی")]
 
         public void ThenAnd()
         {
-            _goodsRepository.Should().Be(4);
+            _context.SalesInvoices.Should().HaveCount(1);
         }
 
         [Fact]
@@ -96,5 +100,4 @@ namespace SuperMarkets.Specs.SalesInvoices
 
         }
     }
-}
 }

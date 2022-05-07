@@ -10,12 +10,15 @@ using SuperMarket.Persistence.EF;
 using SuperMarket.Persistence.EF.Categories;
 using SuperMarket.Persistence.EF.EntryDocuments;
 using SuperMarket.Persistence.EF.Goodses;
+using SuperMarket.Persistence.EF.SalesInvoices;
 using SuperMarket.Services.Categories;
 using SuperMarket.Services.Categories.Contracts;
 using SuperMarket.Services.EntryDocuments;
 using SuperMarket.Services.EntryDocuments.Contracts;
 using SuperMarket.Services.Goodses;
 using SuperMarket.Services.Goodses.Contracts;
+using SuperMarket.Services.SalesInvoices;
+using SuperMarket.Services.SalesInvoices.Contracts;
 using Service = Autofac.Core.Service;
 
 namespace SuperMarket.WebAPI
@@ -40,7 +43,10 @@ namespace SuperMarket.WebAPI
             services.AddScoped<GoodsRepository, EFGoodsRepository>();
             services.AddScoped<EntryDocumentService, EntryDocumentAppservice>();
             services.AddScoped<EntryDocumentRepository, EFEntryDocumentRepository>();
-            
+
+            services.AddScoped<SalesInvoiceService, SalesInvoiceAppService>();
+            services.AddScoped<SalesInvoiceRepository, EFSalesInvoiceRepository>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SuperMarket.WebAPI", Version = "v1" });

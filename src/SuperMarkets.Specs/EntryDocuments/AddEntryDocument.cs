@@ -49,7 +49,7 @@ namespace SuperMarkets.Specs.EntryDocuments
             _context = CreateDataContext();
             _unitOfWork = new EFUnitOfWork(_context);
             _entryDocumentRepository = new EFEntryDocumentRepository(_context);
-            _sut = new EntryDocumentAppservice(_unitOfWork, _entryDocumentRepository);
+            _sut = new EntryDocumentAppservice(_unitOfWork, _entryDocumentRepository, _goodsRepository);
             _goodsRepository = new EFGoodsRepository(_context);
             _goodsService = new GoodsAppService(_unitOfWork, _goodsRepository, _categoryRepository);
             _categoryRepository = new EFCategoryRepository(_context);
@@ -66,16 +66,16 @@ namespace SuperMarkets.Specs.EntryDocuments
         [And("کالایی با عنوان ‘ماست رامک’  با قیمت خرید’۲۰۰۰’  با کد کالا انحصاری’YR-190’   با موجودی ‘۱۰’  تعریف می کنم")]
         public void GivenAnd()
         {
-            _addGoodsDto = new AddGoodsDto
+            _goods = new Goods
             {
                 Name = "ماست رامک",
-                CategoryId = 1,
+                CategoryId = _category.Id,
                 Count = 10,
                 SalesPrice = 2000,
                 UniqueCode = "YR-190",
                 MinimumInventory = 5,
             };
-            _goodsService.Add(_addGoodsDto);
+            _context.Manipulate(_ => _.Goods.Add(_goods));
         }
 
         [When("کالایی با کد ‘۱۰۰’  با قیمت خرید ‘۱۰۰۰’  با موجودی ‘۷’ درتاریخ ‘ 01/01/1400‘ وارد میکنم")]
@@ -87,7 +87,7 @@ namespace SuperMarkets.Specs.EntryDocuments
                 DateBuy = DateTime.Now.Date,
                 GoodsCount = 7 + _goods.Count
             };
-            _context.Manipulate(_ => _.Goods.Add(_goods));
+            _context.Manipulate(_ => _.EntryDocuments.Add(_entryDocument));
         }
         
         [Then("سند کالایی با عنوان ‘ماست رامک’  با قیمت خرید ‘۱۰۰۰’  با موجودی ‘۷’ درتاریخ ‘ 01/01/1400‘ باید وجود داشته باشد")]
@@ -96,7 +96,7 @@ namespace SuperMarkets.Specs.EntryDocuments
             _context.EntryDocuments.Should().Contain(_ => _.GoodsId == _goods.Id);
             _context.EntryDocuments.Should().Contain(_ => _.BuyPrice == _entryDocument.BuyPrice);
             _context.EntryDocuments.Should().Contain(_ => _.DateBuy == _entryDocument.DateBuy.Date);
-            _context.EntryDocuments.Should().Contain(_ => _.GoodsCount == _goods.Count + _entryDocument.GoodsCount);
+            _context.EntryDocuments.Should().Contain(_ => _.GoodsCount == _entryDocument.GoodsCount);
         }
 
         [Fact]

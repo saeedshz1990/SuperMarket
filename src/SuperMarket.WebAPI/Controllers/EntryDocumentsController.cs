@@ -36,7 +36,7 @@ namespace SuperMarket.WebAPI.Controllers
         }
 
         [HttpGet("{goodsId}")]
-        public IList<GetEntryDocumentDto> GetByGoodsId(int goodsId)
+        public IList<EntryDocument> GetByGoodsId(int goodsId)
         {
             return _entryDocumentService.GetByGoodsId(goodsId);
         }

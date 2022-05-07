@@ -8,6 +8,7 @@ using SuperMarket.Persistence.EF.EntryDocuments;
 using SuperMarket.Services.EntryDocuments;
 using SuperMarket.Services.EntryDocuments.Contracts;
 using SuperMarket.Services.EntryDocuments.Exceptions;
+using SuperMarket.Services.Goodses.Contracts;
 using SuperMarket.Test.Tools.Categories;
 using SuperMarket.Test.Tools.EntryDocumnets;
 using SuperMarket.Test.Tools.Goodses;
@@ -26,12 +27,13 @@ namespace SuperMarket.Services.Test.Unit.EntryDocuments
         private AddEntryDocumentDto _addEntryDocumentDto;
         private EntryDocument _entryDocument;
         private UpdateEntryDocumentDto _updateEntryDocumentDto;
-
+        private readonly GoodsRepository _goodsRepository;
+        
         public EntryDocumentServiceTests()
         {
             _context = new EFInMemoryDatabase().CreateDataContext<EFDataContext>();
             _unitOfWork = new EFUnitOfWork(_context);
-            _sut = new EntryDocumentAppservice(_unitOfWork, _entryDocumentRepository);
+            _sut = new EntryDocumentAppservice(_unitOfWork, _entryDocumentRepository, _goodsRepository);
             _entryDocumentRepository = new EFEntryDocumentRepository(_context);
         }
 

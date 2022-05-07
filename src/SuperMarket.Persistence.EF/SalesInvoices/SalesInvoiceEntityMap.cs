@@ -23,6 +23,7 @@ namespace SuperMarket.Persistence.EF.SalesInvoices
                 .IsRequired();
 
             _.Property(x => x.SalesPrice)
+                .HasColumnName("SalePrice")
                 .IsRequired();
 
             _.Property(x => x.SalesDate)
