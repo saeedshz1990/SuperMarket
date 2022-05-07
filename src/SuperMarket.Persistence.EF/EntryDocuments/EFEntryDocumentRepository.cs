@@ -31,17 +31,21 @@ namespace SuperMarket.Persistence.EF.EntryDocuments
             }).ToList();
         }
 
-        public IList<GetEntryDocumentDto> GetByGoodsId(int goodsId)
+        public IList<EntryDocument> GetByGoodsId(int goodsId)
         {
             return _context.EntryDocuments.Where(_ => _.GoodsId == goodsId).Select(
-                _ => new GetEntryDocumentDto
+                _ => new EntryDocument
                 {
-                    id = _.Id,
                     GoodsId = _.GoodsId,
                     BuyPrice = _.BuyPrice,
                     DateBuy = _.DateBuy.Date,
                     GoodsCount = _.GoodsCount
                 }).ToList();
+        }
+
+        public EntryDocument FindByGoodsId(int goodsId)
+        {
+            return _context.EntryDocuments.FirstOrDefault(_ => _.GoodsId == goodsId);
         }
 
         public EntryDocument GetById(int id)

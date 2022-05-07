@@ -65,5 +65,27 @@ namespace SuperMarket.Persistence.EF.Goodses
         {
             return _context.Goods.Any(_ => _.Id == id);
         }
+
+        public int CountGoodsInCategory(int categoryId)
+        {
+            return _context.Goods.Count(_ => _.CategoryId == categoryId);
+        }
+
+        public IList<Goods> FindCategoryGoods(int categoryId)
+        {
+            return _context
+                .Goods
+                .Where(_ => _.CategoryId == categoryId)
+                .Select(_ => new Goods
+                {
+                    Id = _.Id,
+                    Name = _.Name,
+                    CategoryId = _.CategoryId,
+                    UniqueCode = _.UniqueCode,
+                    SalesPrice = _.SalesPrice,
+                    MinimumInventory = _.MinimumInventory,
+                    Count = _.Count
+                }).ToList();
+        }
     }
 }

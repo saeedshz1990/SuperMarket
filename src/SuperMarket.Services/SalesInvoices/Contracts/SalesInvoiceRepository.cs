@@ -12,6 +12,11 @@ namespace SuperMarket.Services.SalesInvoices.Contracts
         void Update(SalesInvoice salesInvoice);
         void Delete(int id);
         SalesInvoice FindById(int id);
+
+        int FindByGoodsId(int goodsCategoryId);
+
+        IList<SalesInvoice> FindGoodsId(int goodsId);
         
+
     }
 }
