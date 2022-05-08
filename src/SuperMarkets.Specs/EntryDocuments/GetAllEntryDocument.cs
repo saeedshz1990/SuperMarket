@@ -51,34 +51,34 @@ namespace SuperMarkets.Specs.EntryDocuments
             _entryDocumentRepository = new EFEntryDocumentRepository(_context);
             _sut = new EntryDocumentAppservice(_unitOfWork, _entryDocumentRepository, _goodsRepository);
             _goodsRepository = new EFGoodsRepository(_context);
-            _goodsService = new GoodsAppService(_unitOfWork, _goodsRepository,_categoryRepository);
+            _goodsService = new GoodsAppService(_unitOfWork, _goodsRepository, _categoryRepository);
             _categoryRepository = new EFCategoryRepository(_context);
             _categoryService = new CategoryAppService(_unitOfWork, _categoryRepository);
         }
 
-        [Given("کالایی با کد '01' در فهرست کالا ها تعریف شده است و هیچ کالایی موجود 	نیست")]
+        [Given("دسته بندی کالا با عنوان ‘لبنیات ‘  تعریف می کنیم")]
         public void Given()
         {
-            _category = new Category { Name = "خشکبار" };
+            _category = new Category { Name = "لبنیات" };
             _context.Manipulate(_ => _.Categories.Add(_category));
         }
 
-        [And("ایجاد کالا")]
+        [And("کالایی با عنوان ‘ماست رامک’  با قیمت فروش’۲۰۰۰’  با کد کالا انحصاری’YR-190’   با موجودی ‘۱۰’  تعریف می کنم")]
         public void GivenFirstAnd()
         {
             _goods = new Goods
             {
                 Name = "ماست موسیر",
                 CategoryId = _category.Id,
-                Count = 5,
-                SalesPrice = 1890,
-                UniqueCode = "kj-313",
+                Count = 10,
+                SalesPrice = 2000,
+                UniqueCode = "YR-190",
                 MinimumInventory = 5,
             };
             _context.Manipulate(_ => _.Goods.Add(_goods));
         }
 
-        [When("ورودی کالای کد '01' را به تعداد '5' و قیمت 100 وارد می کنیم")]
+        [When("کالایی با کد ‘۱۰۰’  با قیمت خرید ‘۱۰۰۰’  با موجودی ‘۷’ درتاریخ ‘ 01/01/1400‘ وارد میکنم")]
         public void GivenSecondAnd()
         {
             _addEntryDocumentDto = new AddEntryDocumentDto
@@ -89,25 +89,18 @@ namespace SuperMarkets.Specs.EntryDocuments
                 GoodsCount = 5
             };
             _sut.Add(_addEntryDocumentDto);
-            //_context.Manipulate(_ => _.EntryDocuments.Add(_entryDocument));
         }
 
-        [When("میخواهیم لیست تمامی ورودی ها را دریافت کنیم")]
+        [When("درخواست نمایش تمام فاکتور های را می دهیم")]
         public void When()
         {
             _sut.GetAll();
         }
-        
-        [Then("لیست تمامی ورودی ها باید به شرح زیر باشد")]
+
+        [Then("فقط کالایی با کد ‘۱۰۰’  با قیمت خرید ‘۱۰۰۰’  با موجودی ‘۷’ درتاریخ ‘ 01/01/1400‘ موجود می باشد")]
         public void Then()
         {
             _context.EntryDocuments.Should().HaveCount(1);
-            //_context.EntryDocuments
-            //    .Should()
-            //    .Contain(_ => _.GoodsId == _goods.Id
-            //                   && _.BuyPrice == _entryDocument.BuyPrice
-            //                   && _.DateBuy == _entryDocument.DateBuy
-            //                   && _.GoodsCount == _entryDocument.GoodsCount);
         }
 
         [Fact]
@@ -118,7 +111,7 @@ namespace SuperMarkets.Specs.EntryDocuments
             GivenSecondAnd();
             When();
             Then();
-            
-        }        
+
+        }
     }
 }

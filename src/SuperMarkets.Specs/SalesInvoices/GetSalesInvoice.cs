@@ -1,5 +1,4 @@
 ﻿using System;
-using Autofac.Builder;
 using FluentAssertions;
 using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Application;
@@ -16,6 +15,7 @@ using SuperMarket.Test.Tools.Goodses;
 using SuperMarkets.Specs.Infrastructure;
 using Xunit;
 using static SuperMarkets.Specs.BDDHelper;
+
 namespace SuperMarkets.Specs.SalesInvoices
 {
     [Scenario("مدیریت سند فروش")]
@@ -44,51 +44,56 @@ namespace SuperMarkets.Specs.SalesInvoices
             _sut = new SalesInvoiceAppService(_unitOfWork, _salesInvoiceRepository,  _goodsRepository);
             _categoryRepository = new EFCategoryRepository(_context);
         }
-        [Given("کالایی با کد '01' و تعداد' 3'  فروش رفته شده")]
+        [Given("دسته بندی کالا با عنوان ‘لبنیات ‘  تعریف می کنیم")]
         public void Given()
         {
             _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
+        }
 
-            var categoryId = _categoryRepository.FindById(_category.Id);
+        [And("کالایی با عنوان ‘ماست رامک’  با قیمت فروش ‘۲۰۰۰’  با کد کالا انحصاری’YR-190’ با موجودی ‘۱۰’  تعریف می کنم")]
+        public void GivenFirstAnd()
+        {
             _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
-
+        }
+        
+        [And("کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  می فروشیم")]
+        public void GivenSecondAnd()
+        {
             _salesInvoice = new SalesInvoice
             {
                 CustomerName = "Saeed Ansari",
                 SalesDate = DateTime.Now.Date,
                 SalesPrice = 2000,
                 GoodsId = _goods.Id,
-                Count = 3
+                Count = 2
             };
-                _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
-
+            _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
         }
 
-        [When("میخواهیم لیست تمامی ورودی ها را دریافت کنیم")]
+        [When("درخواست نمایش تمام فاکتورهای فروش موجود  را می کنم")]
         public void When()
         {
             _sut.GetAll();
         }
 
-        [Then(" ورودی با کد کالای '01' و تعداد 1' و به ما داده می شود")]
+        [Then(" تنها کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’ فروش رفته است")]
         public void Then()
         {
             var expected = _sut.GetAll();
-
             expected.Should().HaveCount(1);
             expected.Should().Contain(_ => _.GoodsId == _salesInvoice.GoodsId
                                            && _.Count == _salesInvoice.Count);
         }
-
-
 
         [Fact]
         public void Run()
         {
             Runner.RunScenario(
                 _ => Given()
+                , _ => GivenFirstAnd()
+                , _ => GivenSecondAnd()
                 , _ => When()
                 , _ => Then());
         }

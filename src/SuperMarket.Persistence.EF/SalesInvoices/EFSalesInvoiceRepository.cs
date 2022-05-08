@@ -52,18 +52,7 @@ namespace SuperMarket.Persistence.EF.SalesInvoices
         public SalesInvoice FindById(int id)
         {
             return _context.SalesInvoices
-                .Select(_ => new SalesInvoice
-                {
-                    Id = _.Id,
-                    CustomerName = _.CustomerName,
-                    Count = _.Count,
-                    SalesPrice = _.SalesPrice,
-                    SalesDate = _.SalesDate,
-                    GoodsId = _.GoodsId
-                    })
-                .FirstOrDefault(x => x.Id == id);
-
-
+                .FirstOrDefault(_ => _.Id == id);
         }
 
         public bool GetBySalesInvoicesId(int id)

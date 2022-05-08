@@ -76,22 +76,22 @@ namespace SuperMarket.Services.SalesInvoices
 
         public void Update(int id, UpdateSalesInvoiceDto dto)
         {
-            var salesInvoices = _salesInvoiceRepository.FindById(id);
-            
-            //var isCheckedExists = _salesInvoiceRepository.FindById(id);
-            //if (isCheckedExists == null)
-            //{
-            //    throw new SalesInvoiceNotFoundException();
-            //}
-            //Goods goodsId = _goodsRepository
-            //    .FindById(_salesInvoiceRepository.FindById(id)
-            //        .GoodsId);
-            //goodsId.Count = goodsId.Count - _salesInvoiceRepository.FindById(id).Count;
-            //_goodsRepository.Update(goodsId.Id, goodsId);
+            var _salesInvoices = new SalesInvoice();
+            _salesInvoices = _salesInvoiceRepository.FindById(id);
 
-            salesInvoices.GoodsId = dto.GoodsId;
-            salesInvoices.Count = dto.Count;
-            _unitOfWork.Commit();
+                //var isCheckedExists = _salesInvoiceRepository.FindById(id);
+                //if (isCheckedExists == null)
+                //{
+                //    throw new SalesInvoiceNotFoundException();
+                //}
+                //Goods goodsId = _goodsRepository
+                //    .FindById(_salesInvoiceRepository.FindById(id)
+                //        .GoodsId);
+                //goodsId.Count = goodsId.Count - _salesInvoiceRepository.FindById(id).Count;
+                //_goodsRepository.Update(goodsId.Id, goodsId);
+                _salesInvoices.GoodsId = dto.GoodsId;
+                _salesInvoices.Count = dto.Count;
+                _unitOfWork.Commit();
         }
     }
 }

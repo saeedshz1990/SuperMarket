@@ -33,7 +33,7 @@ namespace SuperMarket.Persistence.EF.SalesInvoices
             _.HasMany(x=>x.Goods)
                 .WithOne(x => x.SalesInvoices)
                 .HasForeignKey(x => x.SalesInvoiceId)
-                .OnDelete(DeleteBehavior.ClientNoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
 
 

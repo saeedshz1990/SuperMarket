@@ -48,27 +48,36 @@ namespace SuperMarkets.Specs.SalesInvoices
             _categoryRepository = new EFCategoryRepository(_context);
         }
 
-        [Given("ورودی کالا با کد '01' وفروش 1 از 6 عدد کالا در فهرست ورودی کالا ها موجود است")]
+        [Given("دسته بندی کالا با عنوان ‘لبنیات ‘  تعریف می کنیم")]
         public void Given()
-        {
+        {   
             _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
+        }
 
+        [And("کالایی با عنوان ‘ماست رامک’  با قیمت فروش ‘۲۰۰۰’  با کد کالا انحصاری’YR-190’ با موجودی ‘۱۰’  تعریف می کنم")]
+        public void GivenFirstAnd()
+        {
             _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
-
+        }
+        
+        [And("کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  می فروشیم")]
+        public void GivenSecondAnd()
+        {
             _salesInvoice = new SalesInvoice
             {
                 CustomerName = "Saeed Ansari",
                 SalesDate = DateTime.Now.Date,
                 SalesPrice = 2000,
                 GoodsId = _goods.Id,
-                Count = 3
+                Count = 2
             };
             _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
         }
         
-        [When("ورودی کالا با کد 1 را به تعداد 4  ویرایش می کنیم")]
+
+        [When("کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘4’  ویرایش می کنیم")]
         public void When()
         {
             _updateSalesInvoiceDto = new UpdateSalesInvoiceDto
@@ -81,17 +90,16 @@ namespace SuperMarkets.Specs.SalesInvoices
             };
 
             _sut.Update(_goods.Id,_updateSalesInvoiceDto);
-
         }
 
-        [Then(" ورودی با کد کالای '01' و تعداد 1' و به ما داده می شود")]
+        [Then(" فروش کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  در لیست فروش قرار دارد")]
         public void Then()
         {
             _context.SalesInvoices.Any(_ => _.GoodsId == 1
                                         && _.Count == 5).Should().BeTrue();
         }
 
-        [And(" تعداد 2عدد از کالا موجود می باشد")]
+        [And(" تنها کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  می فروشیم")]
         public void ThenAnd()
         {
             int goodsId = _goodsRepository.FindById(_salesInvoice.GoodsId).Id;
@@ -105,6 +113,8 @@ namespace SuperMarkets.Specs.SalesInvoices
         {
             Runner.RunScenario(
                 _ => Given()
+                ,_=>GivenFirstAnd()
+                , _ => GivenSecondAnd()
                 , _ => When()
                 , _ => Then()
                 , _ => ThenAnd());

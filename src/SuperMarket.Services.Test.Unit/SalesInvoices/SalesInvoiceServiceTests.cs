@@ -61,7 +61,7 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
                 CustomerName = "Saeed Ansari",
                 SalesDate = DateTime.Now.Date,
                 SalesPrice = 2000,
-                GoodsId = 1,
+                GoodsId = _goods.Id,
                 Count = 3
             };
             _sut.Add(_addSalesInvoiceDto);
@@ -77,7 +77,7 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
                 CustomerName = "Saeed Ansari",
                 SalesDate = DateTime.Now.Date,
                 SalesPrice = 2000,
-                GoodsId = 1,
+                GoodsId = _goods.Id,
                 Count = 3
             };
             Action expected = () => _sut.Add(_addSalesInvoiceDto);
@@ -99,7 +99,7 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
                 CustomerName = "Saeed Ansari",
                 SalesDate = DateTime.Now.Date,
                 SalesPrice = 2000,
-                GoodsId = 1,
+                GoodsId = _goods.Id,
                 Count = 3
             };
 
@@ -134,7 +134,7 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
                 CustomerName = "Saeed Ansari",
                 SalesDate = DateTime.Now.Date,
                 SalesPrice = 2000,
-                GoodsId = 1,
+                GoodsId = _goods.Id,
                 Count = 3
             };
 
@@ -144,7 +144,7 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
                 CustomerName = "Saeed Ansari",
                 SalesDate = DateTime.Now.Date,
                 SalesPrice = 2000,
-                GoodsId = 1,
+                GoodsId = _goods.Id,
                 Count = 5
             };
 
@@ -183,7 +183,7 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
                 CustomerName = "Saeed Ansari",
                 SalesDate = DateTime.Now.Date,
                 SalesPrice = 2000,
-                GoodsId = 1,
+                GoodsId = _goods.Id,
                 Count = 3
             };
 

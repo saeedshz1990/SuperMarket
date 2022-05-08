@@ -44,24 +44,27 @@ namespace SuperMarkets.Specs.SalesInvoices
             _context = CreateDataContext();
             _unitOfWork = new EFUnitOfWork(_context);
             _salesInvoiceRepository = new EFSalesInvoiceRepository(_context);
-            _sut = new SalesInvoiceAppService(_unitOfWork,_salesInvoiceRepository , _goodsRepository);
+            _sut = new SalesInvoiceAppService(_unitOfWork, _salesInvoiceRepository, _goodsRepository);
             _categoryRepository = new EFCategoryRepository(_context);
             _goodsRepository = new EFGoodsRepository(_context);
         }
 
-        [Given("الایی با کد '01' در فهرست کالا ها تعریف شده است و  6 عدد موجود است")]
+        [Given("دسته بندی کالا با عنوان ‘لبنیات ‘  تعریف می کنیم")]
         public void Given()
         {
             _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
+        }
 
+        [And("کالایی با عنوان ‘ماست رامک’  با قیمت فروش ‘۲۰۰۰’  با کد کالا انحصاری’YR-190’ با موجودی ‘۱۰’  تعریف می کنم")]
+        public void GivenAnd()
+        {
             var categoryId = _categoryRepository.FindById(_category.Id);
             _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
         }
 
-        
-        [When("کالای 01 را در به تعداد 2 می فروشیم")]
+        [When("فرض می کنیم : کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  می فروشیم")]
         public void When()
         {
             _addSalesInvoiceDto = new AddSalesInvoiceDto
@@ -72,18 +75,16 @@ namespace SuperMarkets.Specs.SalesInvoices
                 GoodsId = _goods.Id,
                 Count = 3
             };
-
             _sut.Add(_addSalesInvoiceDto);
         }
-        [Then("فروش کالا در لیست فروش موجود است")]
-
+        
+        [Then(": فروش کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  در لیست فروش قرار دارد")]
         public void Then()
         {
             _context.SalesInvoices.Count(_ => _.GoodsId == _goods.Id && _.Count == _goods.Count);
         }
 
-        [When("تعداد 4 کالا در لیست کالا ها باقی")]
-
+        [When("تنها کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  می فروشیم")]
         public void ThenAnd()
         {
             _context.SalesInvoices.Should().HaveCount(1);
@@ -94,6 +95,7 @@ namespace SuperMarkets.Specs.SalesInvoices
         {
             Runner.RunScenario(
                 _ => Given()
+                , _ => GivenAnd()
                 , _ => When()
                 , _ => Then()
                 , _ => ThenAnd());
