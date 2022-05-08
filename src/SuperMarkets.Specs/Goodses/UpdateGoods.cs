@@ -88,7 +88,7 @@ namespace SuperMarkets.Specs.Goodses
         public void Then()
         {
             var expected = _context.Goods.Any(_ => _.UniqueCode == "YK-141" && _.Name == "ماست کاله");
-            expected.Should().BeTrue();
+            expected.Should().BeFalse();
         }
 
         [Fact]

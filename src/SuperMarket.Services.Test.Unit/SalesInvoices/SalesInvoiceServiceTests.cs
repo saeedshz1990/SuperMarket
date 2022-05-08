@@ -15,6 +15,7 @@ using SuperMarket.Services.SalesInvoices.Contracts;
 using SuperMarket.Services.SalesInvoices.Exceptions;
 using SuperMarket.Test.Tools.Categories;
 using SuperMarket.Test.Tools.Goodses;
+using SuperMarket.Test.Tools.SaleInvoices;
 using Xunit;
 
 namespace SuperMarket.Services.Test.Unit.SalesInvoices
@@ -52,34 +53,19 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
             _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
-            int categoryId = _categoryRepository.FindByName(_category.Name).Id;
-            _goods = CreateGoodsFactory.CreateGoods(categoryId);
-            _context.Manipulate(_ => _.Goods.Add(_goods));
+            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
+            _context.Manipulate(_ => _.Add(_goods));
 
-            _addSalesInvoiceDto = new AddSalesInvoiceDto
-            {
-                CustomerName = "Saeed Ansari",
-                SalesDate = DateTime.Now.Date,
-                SalesPrice = 2000,
-                GoodsId = _goods.Id,
-                Count = 3
-            };
+            _addSalesInvoiceDto = CreateSalesInvoiceFactory.CreateAddSalesInvoice(_goods.Id);
             _sut.Add(_addSalesInvoiceDto);
 
-            _context.SalesInvoices.Should().HaveCount(3);
+            _context.SalesInvoices.Should().HaveCount(1);
         }
 
         [Fact]
         public void Throw_Exception_When_GoodsId_NotFound()
         {
-            _addSalesInvoiceDto = new AddSalesInvoiceDto
-            {
-                CustomerName = "Saeed Ansari",
-                SalesDate = DateTime.Now.Date,
-                SalesPrice = 2000,
-                GoodsId = _goods.Id,
-                Count = 3
-            };
+            _addSalesInvoiceDto = CreateSalesInvoiceFactory.CreateAddSalesInvoice(_goods.Id);
             Action expected = () => _sut.Add(_addSalesInvoiceDto);
             expected.Should().ThrowExactly<GoodsIdNotFoundForSaleInvoicesException>();
         }
@@ -90,20 +76,12 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
             _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
-            int categoryId = _categoryRepository.FindByName(_category.Name).Id;
-            _goods = CreateGoodsFactory.CreateGoods(categoryId);
+            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
 
-            _salesInvoice = new SalesInvoice
-            {
-                CustomerName = "Saeed Ansari",
-                SalesDate = DateTime.Now.Date,
-                SalesPrice = 2000,
-                GoodsId = _goods.Id,
-                Count = 3
-            };
-
+            _salesInvoice = CreateSalesInvoiceFactory.CreateSalesInvoice(_goods.Id);
             _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
+           
             _sut.Delete(_salesInvoice.Id);
 
             _context.SalesInvoices.FirstOrDefault(_ => _.Id == _salesInvoice.Id).Should().BeNull();
@@ -125,28 +103,15 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
             _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
-            int categoryId = _categoryRepository.FindByName(_category.Name).Id;
-            _goods = CreateGoodsFactory.CreateGoods(categoryId);
+            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
 
-            _salesInvoice = new SalesInvoice
-            {
-                CustomerName = "Saeed Ansari",
-                SalesDate = DateTime.Now.Date,
-                SalesPrice = 2000,
-                GoodsId = _goods.Id,
-                Count = 3
-            };
-
+            _salesInvoice = CreateSalesInvoiceFactory.CreateSalesInvoice(_goods.Id);
             _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
-            _updateSalesInvoiceDto = new UpdateSalesInvoiceDto
-            {
-                CustomerName = "Saeed Ansari",
-                SalesDate = DateTime.Now.Date,
-                SalesPrice = 2000,
-                GoodsId = _goods.Id,
-                Count = 5
-            };
+
+          
+            _updateSalesInvoiceDto = CreateSalesInvoiceFactory.CreateUpdateSalesInvoiceDto("SaeedAnsari",
+                5, 2000, DateTime.Now.Date, _goods.Id);
 
             _sut.Update(_salesInvoice.Id, _updateSalesInvoiceDto);
         }
@@ -154,16 +119,10 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
         [Fact]
         public void ThrowException_When_SalesInvoiceId_doesNotExist()
         {
-            _updateSalesInvoiceDto = new UpdateSalesInvoiceDto
-            {
-                CustomerName = "Saeed Ansari",
-                SalesDate = DateTime.Now.Date,
-                SalesPrice = 2000,
-                GoodsId = 1,
-                Count = 5
-            };
-            
-            Action expected = () => _sut.Update(80, _updateSalesInvoiceDto);
+            _updateSalesInvoiceDto = CreateSalesInvoiceFactory.CreateUpdateSalesInvoiceDto("SaeedAnsari",
+                5, 2000, DateTime.Now.Date, 1);
+
+            Action expected = () => _sut.Update(1, _updateSalesInvoiceDto);
     
              expected.Should().ThrowExactly<SalesInvoicesNotExistException>();
         }
@@ -174,20 +133,12 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
             _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
-            int categoryId = _categoryRepository.FindByName(_category.Name).Id;
             _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
 
-            _salesInvoice = new SalesInvoice
-            {
-                CustomerName = "Saeed Ansari",
-                SalesDate = DateTime.Now.Date,
-                SalesPrice = 2000,
-                GoodsId = _goods.Id,
-                Count = 3
-            };
-
+            _salesInvoice = CreateSalesInvoiceFactory.CreateSalesInvoice(_goods.Id);
             _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
+            
             var expected = _sut.GetAll();
 
             expected.Should().HaveCount(1);

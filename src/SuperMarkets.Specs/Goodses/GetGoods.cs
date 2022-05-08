@@ -76,7 +76,7 @@ namespace SuperMarkets.Specs.Goodses
         {
             var expected = _sut.GetAll();
 
-            expected.Should().HaveCount(1);
+            expected.Should().HaveCount(0);
             expected.Should().Contain(_ => _.Name == "ماست  رامک");
         }
 

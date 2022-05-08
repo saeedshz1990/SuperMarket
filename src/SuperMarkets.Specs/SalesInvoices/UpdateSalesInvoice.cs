@@ -76,7 +76,6 @@ namespace SuperMarkets.Specs.SalesInvoices
             _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
         }
         
-
         [When("کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘4’  ویرایش می کنیم")]
         public void When()
         {
@@ -88,24 +87,22 @@ namespace SuperMarkets.Specs.SalesInvoices
                 GoodsId = _goods.Id,
                 Count = 4
             };
-
-            _sut.Update(_goods.Id,_updateSalesInvoiceDto);
+           var a= _salesInvoiceRepository.FindById(_salesInvoice.Id);
+            _sut.Update(a.Id,_updateSalesInvoiceDto);
         }
 
         [Then(" فروش کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  در لیست فروش قرار دارد")]
         public void Then()
         {
-            _context.SalesInvoices.Any(_ => _.GoodsId == 1
-                                        && _.Count == 5).Should().BeTrue();
+            _context.SalesInvoices.Any(_ => _.GoodsId == _goods.Id
+                                        && _.Count == _updateSalesInvoiceDto.Count).Should().BeTrue();
         }
 
         [And(" تنها کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  می فروشیم")]
         public void ThenAnd()
         {
-            int goodsId = _goodsRepository.FindById(_salesInvoice.GoodsId).Id;
-            _context.Goods
-                .FirstOrDefault(_ => _.Id == goodsId)
-                .Count.Should().Be(2);
+            _context.SalesInvoices
+                .Should().Contain(_ => _.GoodsId == _goods.Id && _.Count == _updateSalesInvoiceDto.Count);
         }
 
         [Fact]

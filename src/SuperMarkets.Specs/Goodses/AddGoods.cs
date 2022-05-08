@@ -46,7 +46,6 @@ namespace SuperMarkets.Specs.Goodses
             _category = new Category()
             {
                 Name = "لبنیات"
-
             };
             _context.Manipulate(_ => _context.Categories.Add(_category));
         }
