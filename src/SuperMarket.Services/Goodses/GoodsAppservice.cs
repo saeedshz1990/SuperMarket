@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using SuperMarket.Entities;
+﻿using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Application;
 using SuperMarket.Services.Categories.Contracts;
+using SuperMarket.Services.Categories.Exceptions;
 using SuperMarket.Services.Goodses.Contracts;
 using SuperMarket.Services.Goodses.Exceptions;
+using System.Collections.Generic;
 
 namespace SuperMarket.Services.Goodses
 {
@@ -26,14 +27,6 @@ namespace SuperMarket.Services.Goodses
 
         public void Add(AddGoodsDto dto)
         {
-            _goodsRepository.ExistName(dto.Name, dto.CategoryId);
-
-            //bool getCategoryId = _categoryRepository.FindCategoryById(dto.CategoryId);
-            //if (getCategoryId)
-            //{
-            //    throw new DuplicateGoodsNameInCategoryException();
-            //}
-
             _goods = new Goods
             {
                 Name = dto.Name,
@@ -42,9 +35,19 @@ namespace SuperMarket.Services.Goodses
                 SalesPrice = dto.SalesPrice,
                 MinimumInventory = dto.MinimumInventory,
                 Count = dto.Count,
-                SalesInvoiceId = 0,
-                EntryDocumentId = 0
             };
+
+            bool getCategoryId = _categoryRepository.FindCategoryById(dto.CategoryId);
+            if (!getCategoryId)
+            {
+                throw new CategoryNotFoundException();
+            }
+
+            bool goodsNameExist = _goodsRepository.ExistNameGoods(dto.UniqueCode);
+            if (goodsNameExist)
+            {
+                throw new GoodsNameExistInThisCategoryException();
+            }
 
             _goodsRepository.Add(_goods);
             _unitOfWork.Commit();
@@ -63,7 +66,7 @@ namespace SuperMarket.Services.Goodses
         public void Delete(int id)
         {
             var goodsIdExist = _goodsRepository.ExistGoodsIdCheck(id);
-            if (goodsIdExist)
+            if (!goodsIdExist)
             {
                 throw new GoodsIdNotExistInThisCategoryException();
             }
@@ -82,7 +85,7 @@ namespace SuperMarket.Services.Goodses
                 throw new DuplicateGoodsNameInCategoryException();
             }
 
-            var checkGoods = _goodsRepository.ExistGoodsIdCheck(id);
+            _goodsRepository.ExistGoodsIdCheck(id);
             goods.Name = dto.Name;
             goods.CategoryId = dto.CategoryId;
             goods.UniqueCode = dto.UniqueCode;

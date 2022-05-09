@@ -1,5 +1,4 @@
-﻿using System;
-using FluentMigrator;
+﻿using FluentMigrator;
 
 namespace Supermarket.Migrations
 {
@@ -59,8 +58,8 @@ namespace Supermarket.Migrations
                 .WithColumn("MinimumInventory").AsInt32().NotNullable()
                 .WithColumn("SalesPrice").AsInt32().NotNullable()
                 .WithColumn("UniqueCode").AsString(25).NotNullable()
-                .WithColumn("SalesInvoiceId").AsInt32().Nullable().WithDefaultValue(1)
-                .WithColumn("EntryDocumentId").AsInt32().Nullable().WithDefaultValue(1)
+                .WithColumn("SalesInvoiceId").AsInt32().Nullable()
+                .WithColumn("EntryDocumentId").AsInt32().Nullable()
                 .WithColumn("CategoryId").AsInt32()
                 .ForeignKey("FK_Goods_Categories", "Categories", "Id")
                 .OnDelete(System.Data.Rule.None);
@@ -70,10 +69,7 @@ namespace Supermarket.Migrations
         {
             Create.Table("Categories")
                 .WithColumn("Id").AsInt32().PrimaryKey().NotNullable().Identity()
-                .WithColumn("Name").AsString(25)
-                .NotNullable();
-
+                .WithColumn("Name").AsString(25).NotNullable();
         }
-
     }
 }

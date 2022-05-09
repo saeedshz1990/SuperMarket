@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Application;
@@ -22,12 +23,11 @@ namespace SuperMarket.Services.EntryDocuments
             _goodsRepository = goodsRepository;
         }
 
-
         public void Add(AddEntryDocumentDto dto)
         {
-            var isGoodsIdExist = _entryDocumentRepository.GetByGoodsId(dto.GoodsId);
+            bool isGoodsIdExist = _entryDocumentRepository.CheckGoodsIdExist(dto.GoodsId);
 
-            if (isGoodsIdExist == null)
+            if (!isGoodsIdExist)
             {
                 throw new GoodIdNotFoundException();
             }
@@ -56,26 +56,19 @@ namespace SuperMarket.Services.EntryDocuments
             return _entryDocumentRepository.GetByGoodsId(goodsId);
         }
 
-        public IList<GetEntryDocumentDto> GetAll()
+        public List<GetEntryDocumentDto> GetAll()
         {
             return _entryDocumentRepository.GetAll();
         }
 
         public void Update(int id, UpdateEntryDocumentDto dto)
         {
-            var entryDocument = _entryDocumentRepository.GetById(id);
-
-            if (entryDocument == null)
+            bool entryDocumentId = _entryDocumentRepository.GetByExistId(id);
+            if (!entryDocumentId)
             {
                 throw new EntryDocumentIdNotFoundException();
             }
-
-            Goods goods = _goodsRepository.FindById(id);
-
-            goods.Count = goods.Count
-                          + _entryDocumentRepository.GetById(id).GoodsCount
-                          + dto.GoodsCount;
-
+            EntryDocument entryDocument = _entryDocumentRepository.GetById(id);
             entryDocument.GoodsCount = dto.GoodsCount;
             _unitOfWork.Commit();
         }

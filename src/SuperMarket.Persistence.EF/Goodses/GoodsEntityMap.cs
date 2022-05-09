@@ -10,37 +10,41 @@ namespace SuperMarket.Persistence.EF.Goodses
         {
             _.ToTable("Goods");
 
-            _.HasKey(x => x.Id);
+            _.HasKey(_ => _.Id);
 
-            _.Property(x => x.Id)
+            _.Property(_ => _.Id)
                 .IsRequired();
 
-            _.Property(x => x.Name)
+            _.Property(_ => _.Id)
+                .ValueGeneratedOnAdd();
+
+            
+            _.Property(_ => _.Name)
                 .IsRequired()
                 .HasMaxLength(50);
 
-            _.Property(x => x.Count)
+            _.Property(_ => _.Count)
                 .IsRequired();
 
-            _.Property(x => x.SalesPrice)
+            _.Property(_ => _.SalesPrice)
                 .IsRequired();
 
-            _.Property(x => x.MinimumInventory)
+            _.Property(_ => _.MinimumInventory)
                 .IsRequired();
 
-            _.Property(x => x.UniqueCode)
+            _.Property(_ => _.UniqueCode)
                 .IsRequired();
 
-            _.Property(x => x.EntryDocumentId)
-                .HasDefaultValue(1);
+            _.Property(_ => _.EntryDocumentId)
+                .HasDefaultValue(1);//
             
-            _.Property(x=>x.SalesInvoiceId)
-                .HasDefaultValue(1);
+            _.Property(_ => _.SalesInvoiceId)
+                .HasDefaultValue(1);//
 
-            _.HasOne(x => x.Category)
-                .WithMany(x => x.Goods)
-                .HasForeignKey(x => x.CategoryId)
-                .OnDelete(DeleteBehavior.Cascade);
+            _.HasOne(_ => _.Category)
+                .WithMany(_ => _.Goods)
+                .HasForeignKey(_ => _.CategoryId)
+                .OnDelete(DeleteBehavior.ClientNoAction);
         }
     }
 }

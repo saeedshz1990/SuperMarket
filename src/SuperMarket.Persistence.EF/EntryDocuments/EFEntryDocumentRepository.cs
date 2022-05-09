@@ -19,11 +19,11 @@ namespace SuperMarket.Persistence.EF.EntryDocuments
             _context.EntryDocuments.Add(entryDocument);
         }
 
-        public IList<GetEntryDocumentDto> GetAll()
+        public List<GetEntryDocumentDto> GetAll()
         {
             return _context.EntryDocuments.Select(_ => new GetEntryDocumentDto
             {
-                id = _.Id,
+                Id = _.Id,
                 GoodsId = _.GoodsId,
                 BuyPrice = _.BuyPrice,
                 DateBuy = _.DateBuy.Date,
@@ -56,6 +56,16 @@ namespace SuperMarket.Persistence.EF.EntryDocuments
         public void Update(int id, EntryDocument entryDocument)
         {
 
+        }
+
+        public bool GetByExistId(int id)
+        {
+            return _context.EntryDocuments.Any(_ => _.Id == id);
+        }
+
+        public bool CheckGoodsIdExist(int _goodsId)
+        {
+            return _context.EntryDocuments.Any(_ => _.GoodsId == _goodsId);
         }
     }
 }

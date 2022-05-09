@@ -10,24 +10,24 @@ namespace SuperMarket.Persistence.EF.EntryDocuments
         {
             _.ToTable("EntryDocuments");
 
-            _.HasKey(x => x.Id);
+            _.HasKey(_ => _.Id);
 
-            _.Property(x => x.Id)
+            _.Property(_ => _.Id)
                 .ValueGeneratedOnAdd();
 
-            _.Property(x => x.BuyPrice)
+            _.Property(_ => _.BuyPrice)
                 .IsRequired();
 
-            _.Property(x => x.DateBuy)
+            _.Property(_ => _.DateBuy)
                 .IsRequired();
 
-            _.Property(x => x.GoodsId)
+            _.Property(_ => _.GoodsId)
                 .IsRequired();
 
-            _.HasMany(x => x.Goods)
-                .WithOne(x => x.EntryDocuments)
-                .HasForeignKey(x => x.EntryDocumentId)
-                .OnDelete(DeleteBehavior.Cascade);
+            _.HasOne(_ => _.Goods)
+                .WithOne(_ => _.EntryDocuments)
+                .HasForeignKey<EntryDocument>(_ => _.GoodsId)
+                .OnDelete(DeleteBehavior.ClientNoAction);
 
         }
     }

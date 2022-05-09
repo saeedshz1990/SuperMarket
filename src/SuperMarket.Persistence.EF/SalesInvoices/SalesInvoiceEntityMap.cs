@@ -10,30 +10,30 @@ namespace SuperMarket.Persistence.EF.SalesInvoices
         {
             _.ToTable("SalesInvoices");
 
-            _.HasKey(x => x.Id);
+            _.HasKey(_ => _.Id);
 
-            _.Property(x => x.Id)
+            _.Property(_ => _.Id)
                 .ValueGeneratedOnAdd();
 
-            _.Property(x => x.Count)
+            _.Property(_ => _.Count)
                 .IsRequired();
 
-            _.Property(x => x.CustomerName)
+            _.Property(_ => _.CustomerName)
                 .HasMaxLength(50)
                 .IsRequired();
 
-            _.Property(x => x.SalesPrice)
+            _.Property(_ => _.SalesPrice)
                 .HasColumnName("SalePrice")
                 .IsRequired();
 
-            _.Property(x => x.SalesDate)
+            _.Property(_ => _.SalesDate)
                 .IsRequired();
 
 
-            _.HasMany(x=>x.Goods)
-                .WithOne(x => x.SalesInvoices)
-                .HasForeignKey(x => x.SalesInvoiceId)
-                .OnDelete(DeleteBehavior.Cascade);
+            _.HasOne(_ => _.Goods)
+                .WithOne(_ => _.SalesInvoices)
+                .HasForeignKey<SalesInvoice>(_ => _.GoodsId)
+                .OnDelete(DeleteBehavior.ClientNoAction);
 
 
 

@@ -87,5 +87,13 @@ namespace SuperMarket.Persistence.EF.Goodses
                     Count = _.Count
                 }).ToList();
         }
+
+
+        public bool ExistNameGoods(string name)
+        {
+            return _context
+                .Goods
+                .Any(_ => _.UniqueCode == name);
+        }
     }
 }

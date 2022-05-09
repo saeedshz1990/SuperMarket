@@ -17,6 +17,18 @@ namespace SuperMarket.Test.Tools.EntryDocumnets
             };
         }
 
+        public static EntryDocument CreateEntryDocumentDto(int goodsId)
+        {
+            return new EntryDocument
+            {
+                GoodsId = goodsId,
+                GoodsCount = 7,
+                BuyPrice = 2000,
+                DateBuy = DateTime.Now.Date,
+            };
+        }
+        
+
         public static AddEntryDocumentDto CreateAddEntryDocumentDto(int goodsId)
         {
             return new AddEntryDocumentDto()
@@ -37,7 +49,7 @@ namespace SuperMarket.Test.Tools.EntryDocumnets
                 DateBuy = dateTime.Date,
             };
         }
-        public static UpdateEntryDocumentDto CreateUpdateEntryDocumentDto(int goodsId, int goodsCount)
+        public static UpdateEntryDocumentDto CreateUpdateEntryDocumentDto(int entryDocument, int goodsCount)
         {
             return new UpdateEntryDocumentDto()
             {

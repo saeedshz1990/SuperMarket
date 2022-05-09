@@ -10,12 +10,12 @@ namespace SuperMarket.Persistence.EF.Categories
         {
             _.ToTable("Categories");
 
-            _.HasKey(x => x.Id);
+            _.HasKey(_ => _.Id);
 
-            _.Property(x => x.Id)
+            _.Property(_ => _.Id)
                 .ValueGeneratedOnAdd();
 
-            _.Property(x => x.Name)
+            _.Property(_ => _.Name)
                 .HasMaxLength(50).IsRequired();
 
             

@@ -5,6 +5,7 @@ using SuperMarket.Infrastructure.Application;
 using SuperMarket.Infrastructure.Test;
 using SuperMarket.Persistence.EF;
 using SuperMarket.Persistence.EF.EntryDocuments;
+using SuperMarket.Persistence.EF.Goodses;
 using SuperMarket.Services.EntryDocuments;
 using SuperMarket.Services.EntryDocuments.Contracts;
 using SuperMarket.Services.EntryDocuments.Exceptions;
@@ -28,13 +29,15 @@ namespace SuperMarket.Services.Test.Unit.EntryDocuments
         private EntryDocument _entryDocument;
         private UpdateEntryDocumentDto _updateEntryDocumentDto;
         private readonly GoodsRepository _goodsRepository;
-        
+
         public EntryDocumentServiceTests()
         {
             _context = new EFInMemoryDatabase().CreateDataContext<EFDataContext>();
             _unitOfWork = new EFUnitOfWork(_context);
-            _sut = new EntryDocumentAppservice(_unitOfWork, _entryDocumentRepository, _goodsRepository);
             _entryDocumentRepository = new EFEntryDocumentRepository(_context);
+            _goodsRepository = new EFGoodsRepository(_context);
+            _sut = new EntryDocumentAppservice(_unitOfWork, _entryDocumentRepository, _goodsRepository);
+
         }
 
         [Fact]
@@ -46,16 +49,19 @@ namespace SuperMarket.Services.Test.Unit.EntryDocuments
             _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
 
-            _addEntryDocumentDto = CreateEntryDocumentsFactory.CreateAddEntryDocument(_goods.Id,
-                5 + _goods.Count, _addEntryDocumentDto.BuyPrice, _addEntryDocumentDto.DateBuy);
-
+            _addEntryDocumentDto = CreateEntryDocumentsFactory
+                .CreateAddEntryDocumentDto(_goods.Id);
             _sut.Add(_addEntryDocumentDto);
 
-            _context.EntryDocuments.Should().HaveCount(1);
+            _context.EntryDocuments.Should().Contain(_ => _.GoodsId == _addEntryDocumentDto.GoodsId);
+            _context.EntryDocuments.Should().Contain(_ => _.BuyPrice == _addEntryDocumentDto.BuyPrice);
+            _context.EntryDocuments.Should().Contain(_ => _.BuyPrice == _addEntryDocumentDto.BuyPrice);
+            _context.EntryDocuments.Should().Contain(_ => _.DateBuy == _addEntryDocumentDto.DateBuy);
+            _context.EntryDocuments.Should().Contain(_ => _.GoodsCount == _addEntryDocumentDto.GoodsCount);
         }
 
         [Fact]
-        public void ThrowException_When_GoodsId_NotFound()
+        public void AddThrowException_When_GoodsId_NotFound_In_EntryDocument()
         {
             _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
@@ -63,15 +69,14 @@ namespace SuperMarket.Services.Test.Unit.EntryDocuments
             _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
 
-            _addEntryDocumentDto = CreateEntryDocumentsFactory.CreateAddEntryDocument(_goods.Id,
-                5 + _goods.Count, _addEntryDocumentDto.BuyPrice, _addEntryDocumentDto.DateBuy);
+            _addEntryDocumentDto = CreateEntryDocumentsFactory.CreateAddEntryDocumentDto(_goods.Id);
 
             Action expected = () => _sut.Add(_addEntryDocumentDto);
             expected.Should().ThrowExactly<GoodIdNotFoundException>();
         }
 
         [Fact]
-        public void GetAll_getall_EntryDocument_properly()
+        public void GetAll_getAll_EntryDocument_properly()
         {
             _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
@@ -79,33 +84,35 @@ namespace SuperMarket.Services.Test.Unit.EntryDocuments
             _goods = _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
 
-            _entryDocument = CreateEntryDocumentsFactory.CreateEntryDocument(_goods.Id,
-                5 + _goods.Count, _addEntryDocumentDto.BuyPrice, _addEntryDocumentDto.DateBuy);
+            _entryDocument = CreateEntryDocumentsFactory.CreateEntryDocumentDto(_goods.Id);
+            _context.Manipulate(_ => _.EntryDocuments.Add(_entryDocument));
 
             var expected = _sut.GetAll();
 
             expected.Should().HaveCount(1);
             _context.EntryDocuments.Should().Contain(_ => _.BuyPrice == _entryDocument.BuyPrice);
             _context.EntryDocuments.Should().Contain(_ => _.DateBuy == _entryDocument.DateBuy);
-            _context.EntryDocuments.Should().Contain(_ => _.GoodsCount == _goods.Count + _entryDocument.GoodsCount);
+            _context.EntryDocuments.Should().Contain(_ => _.GoodsCount == _entryDocument.GoodsCount);
             _context.EntryDocuments.Should().Contain(_ => _.GoodsId == _entryDocument.GoodsId);
         }
 
         [Fact]
         public void Update_updates_EntryDocument_properly()
         {
-
             _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
             _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
 
+            _entryDocument = CreateEntryDocumentsFactory.CreateEntryDocument(_goods.Id,
+                5, 12000, DateTime.Now.Date);
+            _context.Manipulate(_ => _.EntryDocuments.Add(_entryDocument));
+
             _updateEntryDocumentDto = CreateEntryDocumentsFactory
-                .CreateUpdateEntryDocumentDto(_goods.Id, _updateEntryDocumentDto.GoodsCount);
+                .CreateUpdateEntryDocumentDto(_entryDocument.Id, 5);
             _sut.Update(_entryDocument.Id, _updateEntryDocumentDto);
 
-            _context.Should().Be(_updateEntryDocumentDto.GoodsCount);
         }
     }
 }

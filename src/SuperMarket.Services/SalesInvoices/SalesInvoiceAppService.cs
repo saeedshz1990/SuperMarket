@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using SQLitePCL;
 using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Application;
@@ -28,11 +29,11 @@ namespace SuperMarket.Services.SalesInvoices
         public void Add(AddSalesInvoiceDto dto)
         {
             //var goodsIdCheck = _goodsRepository.ExistGoodsIdCheck(dto.GoodsId);
-
-            //if (!goodsIdCheck )
-            //{
-            //    throw new GoodsIdNotFoundForSaleInvoicesException();//its warning
-            //}
+            var checkGoodsId = _salesInvoiceRepository.GoodsIdCheckForExistence(dto.GoodsId);
+            if (!checkGoodsId)
+            {
+                throw new GoodsIdNotFoundForSaleInvoicesException();//its warning
+            }
 
             var salesInvoices = new SalesInvoice
             {
@@ -60,11 +61,6 @@ namespace SuperMarket.Services.SalesInvoices
                 throw new SalesInvoiceNotFoundException();
             }
 
-            //Goods goodsId = _goodsRepository
-            //    .FindById(_salesInvoiceRepository.FindById(id)
-            //        .GoodsId);
-            //goodsId.Count = goodsId.Count + _salesInvoiceRepository.FindById(id).Count;
-            //_goodsRepository.Update(goodsId.Id, goodsId);
             _salesInvoiceRepository.Delete(id);
             _unitOfWork.Commit();
         }
@@ -79,19 +75,26 @@ namespace SuperMarket.Services.SalesInvoices
             var _salesInvoices = new SalesInvoice();
             _salesInvoices = _salesInvoiceRepository.FindById(id);
 
-                //var isCheckedExists = _salesInvoiceRepository.FindById(id);
-                //if (isCheckedExists == null)
-                //{
-                //    throw new SalesInvoiceNotFoundException();
-                //}
-                //Goods goodsId = _goodsRepository
-                //    .FindById(_salesInvoiceRepository.FindById(id)
-                //        .GoodsId);
-                //goodsId.Count = goodsId.Count - _salesInvoiceRepository.FindById(id).Count;
-                //_goodsRepository.Update(goodsId.Id, goodsId);
-                _salesInvoices.GoodsId = dto.GoodsId;
-                _salesInvoices.Count = dto.Count;
-                _unitOfWork.Commit();
+            bool isCheckedExists = _salesInvoiceRepository.FindByIds(id);
+            if (!isCheckedExists)
+            {
+                throw new SalesInvoicesNotExistException();
+            }
+            
+            //var isCheckedExists = _salesInvoiceRepository.FindById(id);
+            //if (isCheckedExists == null)
+            //{
+            //    throw new SalesInvoiceNotFoundException();
+            //}
+            //Goods goodsId = _goodsRepository
+            //    .FindById(_salesInvoiceRepository.FindById(id)
+            //        .GoodsId);
+            //goodsId.Count = goodsId.Count - _salesInvoiceRepository.FindById(id).Count;
+            //_goodsRepository.Update(goodsId.Id, goodsId);
+            _salesInvoices.GoodsId = dto.GoodsId;
+            _salesInvoices.Count = dto.Count;
+            _unitOfWork.Commit();
         }
+
     }
 }

@@ -14,9 +14,10 @@ namespace SuperMarket.Services.SalesInvoices.Contracts
         SalesInvoice FindById(int id);
         bool GetBySalesInvoicesId(int id);
         int FindByGoodsId(int goodsCategoryId);
-
+        bool GoodsIdCheckForExistence(int goodsId);
         IList<SalesInvoice> FindGoodsId(int goodsId);
-        
 
+
+        bool FindByIds(int id);
     }
 }

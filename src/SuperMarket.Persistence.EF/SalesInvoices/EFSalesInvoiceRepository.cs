@@ -65,9 +65,19 @@ namespace SuperMarket.Persistence.EF.SalesInvoices
             return _context.SalesInvoices.Count(x => x.GoodsId == goodsCategoryId);
         }
 
+        public bool GoodsIdCheckForExistence(int goodsId)
+        {
+            return _context.SalesInvoices.Any(x => x.GoodsId == goodsId);
+        }
+
         public IList<SalesInvoice> FindGoodsId(int goodsId)
         {
             return _context.SalesInvoices.Where(x => x.GoodsId == goodsId).ToList();
+        }
+
+        public bool FindByIds(int id)
+        {
+            return _context.SalesInvoices.Any(x => x.Id == id);
         }
     }
 }

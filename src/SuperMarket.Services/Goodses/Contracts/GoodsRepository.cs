@@ -16,6 +16,7 @@ namespace SuperMarket.Services.Goodses.Contracts
         bool ExistGoodsIdCheck(int id);
         int CountGoodsInCategory(int categoryId);
         IList<Goods> FindCategoryGoods(int categoryId);
+        bool ExistNameGoods(string name);
     }
 }
 
