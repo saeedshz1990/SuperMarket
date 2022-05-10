@@ -51,12 +51,11 @@ namespace SuperMarkets.Specs.Categories
         [When("دسته بندی جدیدی با عنوان ‘لبنیات’ تعریف می کنم")]
         public void When()
         {
-            _secondCategory = new Category
+            _dto = new AddCategoryDto
             {
                 Name = "لبنیات"
             };
-
-            _context.Manipulate(_ => _.Categories.Add(_secondCategory));
+            _sut.Add(_dto);
         }
 
         [Then("تنها یک دسته بندی با عنوان ' لبنیات' باید در فهرست دسته بندی کالا وجود داشته باشد")]

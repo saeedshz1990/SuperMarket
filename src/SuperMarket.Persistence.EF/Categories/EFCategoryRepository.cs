@@ -61,13 +61,15 @@ namespace SuperMarket.Persistence.EF.Categories
 
         public void Update(int id, Category category)
         {
-            
-            
+
+
         }
 
         public bool FindCategoryById(int id)
         {
             return _context.Categories.Any(_ => _.Id == id);
         }
+
+       
     }
 }

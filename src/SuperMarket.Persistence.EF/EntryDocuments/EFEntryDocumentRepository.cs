@@ -67,5 +67,16 @@ namespace SuperMarket.Persistence.EF.EntryDocuments
         {
             return _context.EntryDocuments.Any(_ => _.GoodsId == _goodsId);
         }
+
+        public IList<EntryDocument> GetListOfGoodsId(int goodsId)
+        {
+            return _context.EntryDocuments.Select(_=> new EntryDocument
+            {
+                GoodsCount = _.GoodsCount,
+                GoodsId = _.GoodsId,
+                BuyPrice = _.BuyPrice,
+                DateBuy = _.DateBuy.Date
+            }).Where(_ => _.GoodsId == goodsId).ToList();
+        }
     }
 }

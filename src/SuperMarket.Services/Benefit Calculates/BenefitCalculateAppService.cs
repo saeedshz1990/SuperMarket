@@ -2,6 +2,7 @@
 using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Application;
 using SuperMarket.Services.Benefit_Calculates.Contracts;
+using SuperMarket.Services.Benefit_Calculates.Exceptions;
 using SuperMarket.Services.Categories.Contracts;
 using SuperMarket.Services.EntryDocuments.Contracts;
 using SuperMarket.Services.Goodses.Contracts;
@@ -20,6 +21,7 @@ namespace SuperMarket.Services.Benefit_Calculates
         private EntryDocument _entryDocument;
         private SalesInvoice _salesInvoice;
         private int goodsBenefit;
+        private Goods _goods;
         public BenefitCalculateAppService(UnitOfWork unitOfWork,
             CategoryRepository categoryRepository, GoodsRepository goodsRepository,
             EntryDocumentRepository entryDocumentRepository,
@@ -38,6 +40,7 @@ namespace SuperMarket.Services.Benefit_Calculates
                 .GetByGoodsId(goodsId)
                 .ToList()
                 .FirstOrDefault(_ => _.GoodsId == goodsId);
+
             var counter = _entryDocumentRepository
                 .GetByGoodsId(goodsId)
                 .Count;
@@ -46,6 +49,7 @@ namespace SuperMarket.Services.Benefit_Calculates
                 .FindGoodsId(goodsId)
                 .ToList()
                 .FirstOrDefault(_ => _.GoodsId == goodsId);
+
             int counterSell = _salesInvoiceRepository
                 .FindGoodsId(goodsId)
                 .Count;
@@ -67,9 +71,51 @@ namespace SuperMarket.Services.Benefit_Calculates
             return goodsBenefit;
         }
 
-        public int BenefitCategoryCalculate(int categoryId)
+        public int BenefitCategoryCalculate(int categoryId,int goodsId)
         {
-            return 1;
+            var listOfCategories = _goodsRepository.GetListOfCategory(categoryId);
+   
+            if (listOfCategories == null)
+            {
+                throw new ListOfCategoryNotFoundForCalculateBenefitException();
+            }
+            else
+            {
+                var goodsCount = _entryDocumentRepository
+                    .GetByGoodsId(goodsId)
+                    .ToList()
+                    .FirstOrDefault(_ => _.GoodsId == goodsId);
+
+                var counter = _entryDocumentRepository
+                    .GetByGoodsId(goodsId)
+                    .Count;
+
+                var goodsSell = _salesInvoiceRepository
+                    .FindGoodsId(goodsId)
+                    .ToList()
+                    .FirstOrDefault(_ => _.GoodsId == goodsId);
+
+                int counterSell = _salesInvoiceRepository
+                    .FindGoodsId(goodsId)
+                    .Count;
+
+
+                for (int i = 0; i > counter; i++)
+                {
+                    var calculateEntryBenefit = goodsCount.GoodsCount * goodsCount.BuyPrice;
+
+                    for (int j = 0; j > counterSell; j++)
+                    {
+                        var CalculateSalesBenefit = goodsSell.Count * goodsSell.SalesPrice;
+
+                        goodsBenefit = CalculateSalesBenefit - calculateEntryBenefit;
+
+                    }
+                }
+
+                return goodsBenefit;
+            }
+
         }
     }
 }

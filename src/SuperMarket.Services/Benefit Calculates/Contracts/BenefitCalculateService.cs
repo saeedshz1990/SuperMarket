@@ -2,11 +2,10 @@
 
 namespace SuperMarket.Services.Benefit_Calculates.Contracts
 {
-    public interface BenefitCalculateService :Service
+    public interface BenefitCalculateService : Service
     {
         int BenefitGoodsCalculate(int goodsId);
-        int BenefitCategoryCalculate(int categoryId);
-        
-        
+        int BenefitCategoryCalculate(int categoryId, int goodsId);
+
     }
 }

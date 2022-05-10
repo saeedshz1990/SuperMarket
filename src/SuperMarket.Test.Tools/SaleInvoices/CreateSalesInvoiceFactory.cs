@@ -24,7 +24,7 @@ namespace SuperMarket.Test.Tools.SaleInvoices
             return new SalesInvoice
             {
                 CustomerName = "Saeed Ansari",
-                Count = 2,
+                Count = 12,
                 SalesPrice = 2000,
                 SalesDate = DateTime.Now.Date,
                 GoodsId = goodsId

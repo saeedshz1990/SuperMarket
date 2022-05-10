@@ -87,8 +87,8 @@ namespace SuperMarkets.Specs.SalesInvoices
                 GoodsId = _goods.Id,
                 Count = 4
             };
-           var a= _salesInvoiceRepository.FindById(_salesInvoice.Id);
-            _sut.Update(a.Id,_updateSalesInvoiceDto);
+           var salesInvoice= _salesInvoiceRepository.FindById(_salesInvoice.Id);
+            _sut.Update(salesInvoice.Id,_updateSalesInvoiceDto);
         }
 
         [Then(" فروش کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  در لیست فروش قرار دارد")]
