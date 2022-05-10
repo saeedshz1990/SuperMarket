@@ -22,7 +22,7 @@ namespace SuperMarket.WebAPI.Controllers
         {
             _entryDocumentService.Add(dto);
         }
-        
+
         [HttpGet]
         public IList<GetEntryDocumentDto> GetAll()
         {
@@ -33,12 +33,6 @@ namespace SuperMarket.WebAPI.Controllers
         public EntryDocument GetById(int id)
         {
             return _entryDocumentService.GetById(id);
-        }
-
-        [HttpGet("{goodsId}")]
-        public IList<EntryDocument> GetByGoodsId(int goodsId)
-        {
-            return _entryDocumentService.GetByGoodsId(goodsId);
         }
 
         [HttpPut("{id}")]

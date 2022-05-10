@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SuperMarket.Services.Benefit_Calculates.Contracts;
 
 namespace SuperMarket.WebAPI.Controllers
@@ -14,8 +13,6 @@ namespace SuperMarket.WebAPI.Controllers
         {
             _service = service;
         }
-
-       
 
         [HttpGet("{goodsId}")]
         public void GetAllGoods(int goodsId)

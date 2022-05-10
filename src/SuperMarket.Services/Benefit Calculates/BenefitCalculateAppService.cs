@@ -69,6 +69,8 @@ namespace SuperMarket.Services.Benefit_Calculates
             }
 
             return goodsBenefit;
+
+            
         }
 
         public int BenefitCategoryCalculate(int categoryId,int goodsId)

@@ -40,5 +40,4 @@ namespace SuperMarket.WebAPI.Controllers
             _salesInvoiceService.Update(id, dto);
         }
     }
-
 }
