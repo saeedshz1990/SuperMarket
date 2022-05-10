@@ -30,7 +30,7 @@ namespace SuperMarkets.Specs.Goodses
         private Goods _goods;
         private AddGoodsDto _addGoodsDto;
         private Category _category;
-
+        
         public DeleteGoods(ConfigurationFixture configuration) : base(configuration)
         {
             _context = CreateDataContext();

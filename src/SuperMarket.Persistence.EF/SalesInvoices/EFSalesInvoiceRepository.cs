@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using SuperMarket.Entities;
 using SuperMarket.Services.SalesInvoices.Contracts;
 
@@ -22,20 +21,24 @@ namespace SuperMarket.Persistence.EF.SalesInvoices
 
         public IList<GetSalesInvoiceDto> GetAll()
         {
-            return _context.SalesInvoices.Select(x => new GetSalesInvoiceDto
-            {
-                Id = x.Id,
-                CustomerName = x.CustomerName,
-                Count = x.Count,
-                SalesPrice = x.SalesPrice,
-                SalesDate = x.SalesDate,
-                GoodsId = x.GoodsId
-            }).ToList();
+            return _context
+                .SalesInvoices
+                .Select(x => new GetSalesInvoiceDto
+                {
+                    Id = x.Id,
+                    CustomerName = x.CustomerName,
+                    Count = x.Count,
+                    SalesPrice = x.SalesPrice,
+                    SalesDate = x.SalesDate,
+                    GoodsId = x.GoodsId
+                }).ToList();
         }
 
         public SalesInvoice GetById(int id)
         {
-            return _context.SalesInvoices.FirstOrDefault(x => x.Id == id);
+            return _context
+                .SalesInvoices
+                .FirstOrDefault(x => x.Id == id);
         }
 
         public void Update(SalesInvoice salesInvoice)
@@ -51,33 +54,44 @@ namespace SuperMarket.Persistence.EF.SalesInvoices
 
         public SalesInvoice FindById(int id)
         {
-            return _context.SalesInvoices
+            return _context
+                .SalesInvoices
                 .FirstOrDefault(_ => _.Id == id);
         }
 
         public bool GetBySalesInvoicesId(int id)
         {
-            return _context.SalesInvoices.Any(x => x.Id == id);
+            return _context
+                .SalesInvoices
+                .Any(x => x.Id == id);
         }
 
         public int FindByGoodsId(int goodsCategoryId)
         {
-            return _context.SalesInvoices.Count(x => x.GoodsId == goodsCategoryId);
+            return _context
+                .SalesInvoices
+                .Count(x => x.GoodsId == goodsCategoryId);
         }
 
         public bool GoodsIdCheckForExistence(int goodsId)
         {
-            return _context.SalesInvoices.Any(x => x.GoodsId == goodsId);
+            return _context
+                .SalesInvoices
+                .Any(x => x.GoodsId == goodsId);
         }
 
         public IList<SalesInvoice> FindGoodsId(int goodsId)
         {
-            return _context.SalesInvoices.Where(x => x.GoodsId == goodsId).ToList();
+            return _context
+                .SalesInvoices
+                .Where(x => x.GoodsId == goodsId).ToList();
         }
 
         public bool FindByIds(int id)
         {
-            return _context.SalesInvoices.Any(x => x.Id == id);
+            return _context
+                .SalesInvoices
+                .Any(x => x.Id == id);
         }
     }
 }

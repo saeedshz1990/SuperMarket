@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using SuperMarket.Entities;
-using SuperMarket.Services.Categories.Contracts;
 using SuperMarket.Services.Goodses.Contracts;
 
 namespace SuperMarket.WebAPI.Controllers
@@ -28,6 +27,7 @@ namespace SuperMarket.WebAPI.Controllers
         {
             return _goodsService.GetAll();
         }
+        
         [HttpGet("{id}")]
         public Goods GetById(int id)
         {

@@ -7,15 +7,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SuperMarket.Infrastructure.Application;
 using SuperMarket.Persistence.EF;
-using SuperMarket.Persistence.EF.EntryDocuments;
 using SuperMarket.Persistence.EF.Goodses;
-using SuperMarket.Persistence.EF.SalesInvoices;
-using SuperMarket.Services.EntryDocuments;
-using SuperMarket.Services.EntryDocuments.Contracts;
 using SuperMarket.Services.Goodses;
-using SuperMarket.Services.Goodses.Contracts;
-using SuperMarket.Services.SalesInvoices;
-using SuperMarket.Services.SalesInvoices.Contracts;
 
 namespace SuperMarket.WebAPI
 {
@@ -28,7 +21,6 @@ namespace SuperMarket.WebAPI
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 

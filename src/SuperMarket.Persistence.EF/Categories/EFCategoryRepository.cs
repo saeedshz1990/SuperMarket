@@ -30,17 +30,21 @@ namespace SuperMarket.Persistence.EF.Categories
 
         public Category GetById(int id)
         {
-            var category = _context.Categories.FirstOrDefault(_ => _.Id == id);
+            var category = _context
+                .Categories
+                .FirstOrDefault(_ => _.Id == id);
             return category;
         }
 
         public IList<GetCategoryDto> GetAll()
         {
-            return _context.Categories.Select(_ => new GetCategoryDto
-            {
-                Id = _.Id,
-                Name = _.Name
-            }).ToList();
+            return _context
+                .Categories
+                .Select(_ => new GetCategoryDto
+                {
+                    Id = _.Id,
+                    Name = _.Name
+                }).ToList();
 
         }
 
@@ -51,12 +55,16 @@ namespace SuperMarket.Persistence.EF.Categories
 
         public Category FindById(int id)
         {
-            return _context.Categories.FirstOrDefault(_ => _.Id == id);
+            return _context
+                .Categories
+                .FirstOrDefault(_ => _.Id == id);
         }
 
         public Category FindByName(string name)
         {
-            return _context.Categories.FirstOrDefault(_ => _.Name == name);
+            return _context
+                .Categories
+                .FirstOrDefault(_ => _.Name == name);
         }
 
         public void Update(int id, Category category)
@@ -67,9 +75,9 @@ namespace SuperMarket.Persistence.EF.Categories
 
         public bool FindCategoryById(int id)
         {
-            return _context.Categories.Any(_ => _.Id == id);
+            return _context
+                .Categories
+                .Any(_ => _.Id == id);
         }
-
-       
     }
 }

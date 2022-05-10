@@ -16,6 +16,7 @@ namespace SuperMarket.WebAPI.Controllers
         {
             _salesInvoiceService = salesInvoiceService;
         }
+        
         [HttpPost]
         public void Add(AddSalesInvoiceDto dto)
         {

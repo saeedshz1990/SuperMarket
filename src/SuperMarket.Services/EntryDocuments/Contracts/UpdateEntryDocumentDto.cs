@@ -2,8 +2,6 @@
 {
     public class UpdateEntryDocumentDto
     {
-        
         public int GoodsCount { get; set; }
-        
     }
 }

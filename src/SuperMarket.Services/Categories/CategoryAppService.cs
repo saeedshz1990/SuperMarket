@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Application;
 using SuperMarket.Services.Categories.Contracts;
@@ -64,7 +63,7 @@ namespace SuperMarket.Services.Categories
             var isCategoryNameExist = _categoryRepository
                 .IsCategoryExist(dto.Name);
 
-            if (isCategoryNameExist)
+            if (!isCategoryNameExist)
             {
                 throw new CategoryNameIsExistException();
             }

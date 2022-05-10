@@ -45,7 +45,6 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
             _goodsRepository = new EFGoodsRepository(_context);
             _sut = new SalesInvoiceAppService(_unitOfWork, _salesInvoiceRepository,_goodsRepository);
             _categoryRepository = new EFCategoryRepository(_context);
-            
         }
 
         [Fact]

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SuperMarket.Services.Categories.Contracts
+﻿namespace SuperMarket.Services.Categories.Contracts
 {
     public class AddCategoryDto
     {

@@ -14,7 +14,6 @@ namespace SuperMarket.Services.EntryDocuments.Contracts
         void Update(int id, EntryDocument entryDocument);
         bool GetByExistId(int id);
         bool CheckGoodsIdExist(int _goodsId);
-
         IList<EntryDocument> GetListOfGoodsId(int goodsId);
     }
 }

@@ -87,11 +87,6 @@ namespace SuperMarkets.Specs.Goodses
         {
             _context.Goods.Count().Should().Be(1);
             _context.Goods.Should().Contain(_ => _.Name == _addGoodsDto.Name);
-            //_context.Goods.Should().Contain(_ => _.CategoryId == _addGoodsDto.CategoryId);
-            //_context.Goods.Should().Contain(_ => _.Count == _addGoodsDto.Count);
-            //_context.Goods.Should().Contain(_ => _.UniqueCode == _addGoodsDto.UniqueCode);
-            //_context.Goods.Should().Contain(_ => _.SalesPrice == _addGoodsDto.SalesPrice);
-            //_context.Goods.Should().Contain(_ => _.MinimumInventory == _addGoodsDto.MinimumInventory);
         }
 
         [And("خطایی با عنوان ‘عنوان کالا تکراری است  ‘ باید رخ دهد.")]
@@ -110,7 +105,5 @@ namespace SuperMarkets.Specs.Goodses
             Then();
             ThenAnd();
         }
-
-
     }
 }

@@ -44,6 +44,7 @@ namespace SuperMarkets.Specs.SalesInvoices
             _sut = new SalesInvoiceAppService(_unitOfWork, _salesInvoiceRepository,  _goodsRepository);
             _categoryRepository = new EFCategoryRepository(_context);
         }
+        
         [Given("دسته بندی کالا با عنوان ‘لبنیات ‘  تعریف می کنیم")]
         public void Given()
         {

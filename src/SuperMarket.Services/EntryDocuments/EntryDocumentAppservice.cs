@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading;
 using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Application;
 using SuperMarket.Services.EntryDocuments.Contracts;
@@ -39,8 +37,6 @@ namespace SuperMarket.Services.EntryDocuments
                 BuyPrice = dto.BuyPrice,
                 DateBuy = dto.DateBuy
             };
-            //int goodsCount = _goodsRepository.FindById(dto.GoodsId).Count;
-            //goodsCount += dto.GoodsCount;
 
             _entryDocumentRepository.Add(entryDocument);
             _unitOfWork.Commit();

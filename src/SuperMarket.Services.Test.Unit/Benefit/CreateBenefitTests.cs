@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Application;
 using SuperMarket.Infrastructure.Test;
@@ -11,7 +10,6 @@ using SuperMarket.Persistence.EF.SalesInvoices;
 using SuperMarket.Services.Benefit_Calculates;
 using SuperMarket.Services.Benefit_Calculates.Contracts;
 using SuperMarket.Services.Categories.Contracts;
-using SuperMarket.Services.EntryDocuments;
 using SuperMarket.Services.EntryDocuments.Contracts;
 using SuperMarket.Services.Goodses.Contracts;
 using SuperMarket.Services.SalesInvoices.Contracts;

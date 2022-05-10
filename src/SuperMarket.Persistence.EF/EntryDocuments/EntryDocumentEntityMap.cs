@@ -28,7 +28,6 @@ namespace SuperMarket.Persistence.EF.EntryDocuments
                 .WithOne(_ => _.EntryDocuments)
                 .HasForeignKey<EntryDocument>(_ => _.GoodsId)
                 .OnDelete(DeleteBehavior.ClientNoAction);
-
         }
     }
 }

@@ -17,9 +17,6 @@ namespace SuperMarket.Persistence.EF.Categories
 
             _.Property(_ => _.Name)
                 .HasMaxLength(50).IsRequired();
-
-            
-
         }
     }
 }

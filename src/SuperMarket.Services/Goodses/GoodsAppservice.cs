@@ -48,7 +48,6 @@ namespace SuperMarket.Services.Goodses
             {
                 throw new GoodsNameExistInThisCategoryException();
             }
-
             _goodsRepository.Add(_goods);
             _unitOfWork.Commit();
         }
@@ -62,7 +61,6 @@ namespace SuperMarket.Services.Goodses
         {
             return _goodsRepository.GetAll();
         }
-
         public void Delete(int id)
         {
             var goodsIdExist = _goodsRepository.ExistGoodsIdCheck(id);

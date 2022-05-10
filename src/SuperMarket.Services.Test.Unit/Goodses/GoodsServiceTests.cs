@@ -86,11 +86,11 @@ namespace SuperMarket.Services.Test.Unit.Goodses
             _context.Manipulate(_ => _.Goods.Add(_goods));
             _addGoodsDto = CreateGoodsFactory.CreateAddGoodsDto("ماست کاله", 3,
                 2, 1000, "UY-234", 2);
+            
             Action expected = () => _sut.Add(_addGoodsDto);
             expected.Should().ThrowExactly<CategoryNotFoundException>();
         }
-
-
+        
         [Fact]
         public void Update_updates_Goods_Properly()
         {

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using SuperMarket.Entities;
-using SuperMarket.Services.Categories.Contracts;
 using SuperMarket.Services.Goodses.Contracts;
 
 namespace SuperMarket.Persistence.EF.Goodses
@@ -18,12 +16,16 @@ namespace SuperMarket.Persistence.EF.Goodses
 
         public void Add(Goods goods)
         {
-            _context.Goods.Add(goods);
+            _context
+                .Goods
+                .Add(goods);
         }
 
         public void ExistName(string name, int categoryId)
         {
-            _context.Goods.Any(_ => _.Name == name && _.CategoryId == categoryId);
+            _context
+                .Goods
+                .Any(_ => _.Name == name && _.CategoryId == categoryId);
         }
 
         public void Update(int id, Goods goods)
@@ -33,43 +35,55 @@ namespace SuperMarket.Persistence.EF.Goodses
 
         public void Delete(int id)
         {
-            var goods = _context.Goods.FirstOrDefault(_ => _.Id == id);
+            var goods = _context
+                .Goods
+                .FirstOrDefault(_ => _.Id == id);
             _context.Remove(goods);
         }
 
         public Goods GetById(int id)
         {
-            var goods = _context.Goods.FirstOrDefault(_ => _.Id == id);
+            var goods = _context
+                .Goods
+                .FirstOrDefault(_ => _.Id == id);
             return goods;
         }
 
         public Goods FindById(int id)
         {
-            return _context.Goods.FirstOrDefault(_ => _.Id == id);
+            return _context
+                .Goods
+                .FirstOrDefault(_ => _.Id == id);
         }
 
         public IList<GetGoodsDto> GetAll()
         {
-            return _context.Goods.Select(_ => new GetGoodsDto
-            {
-                Id = _.Id,
-                Name = _.Name,
-                CategoryId = _.CategoryId,
-                UniqueCode = _.UniqueCode,
-                SalesPrice = _.SalesPrice,
-                MinimumInventory = _.MinimumInventory,
-                Count = _.Count
-            }).ToList();
+            return _context
+                .Goods
+                .Select(_ => new GetGoodsDto
+                {
+                    Id = _.Id,
+                    Name = _.Name,
+                    CategoryId = _.CategoryId,
+                    UniqueCode = _.UniqueCode,
+                    SalesPrice = _.SalesPrice,
+                    MinimumInventory = _.MinimumInventory,
+                    Count = _.Count
+                }).ToList();
         }
 
         public bool ExistGoodsIdCheck(int id)
         {
-            return _context.Goods.Any(_ => _.Id == id);
+            return _context
+                .Goods
+                .Any(_ => _.Id == id);
         }
 
         public int CountGoodsInCategory(int categoryId)
         {
-            return _context.Goods.Count(_ => _.CategoryId == categoryId);
+            return _context
+                .Goods
+                .Count(_ => _.CategoryId == categoryId);
         }
 
         public IList<Goods> FindCategoryGoods(int categoryId)
@@ -89,7 +103,6 @@ namespace SuperMarket.Persistence.EF.Goodses
                 }).ToList();
         }
 
-
         public bool ExistNameGoods(string name)
         {
             return _context
@@ -99,15 +112,18 @@ namespace SuperMarket.Persistence.EF.Goodses
 
         public IList<Goods> GetListOfCategory(int categoryId)
         {
-            return _context.Goods.Select(_ => new Goods
-            {
-                CategoryId = _.CategoryId,
-                Count = _.Count,
-                MinimumInventory = _.MinimumInventory,
-                Name = _.Name,
-                SalesPrice = _.SalesPrice,
-                UniqueCode = _.UniqueCode
-            }).Where(_ => _.CategoryId == categoryId).ToList();
+            return _context
+                .Goods
+                .Select(_ => new Goods
+                {
+                    CategoryId = _.CategoryId,
+                    Count = _.Count,
+                    MinimumInventory = _.MinimumInventory,
+                    Name = _.Name,
+                    SalesPrice = _.SalesPrice,
+                    UniqueCode = _.UniqueCode
+                }).Where(_ => _.CategoryId == categoryId)
+                .ToList();
         }
     }
 }

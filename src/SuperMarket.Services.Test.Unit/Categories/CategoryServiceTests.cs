@@ -45,9 +45,8 @@ namespace SuperMarket.Services.Test.Unit.Categories
         }
 
         [Fact]
-        public void Add_ThrowException_When_NameIsDuplicate()
+        public void Add_ThrowException_When_NameCategoryIsDuplicated()
         {
-
             _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
@@ -115,15 +114,15 @@ namespace SuperMarket.Services.Test.Unit.Categories
         }
 
         [Fact]
-        public void Update_ThrowException_When_CategoryNameIsExist()
+        public void Update_ThrowException_When_CategoryNameIsNotExist()
         {
             var fakeCategoryId = 200;
             _category = CreateCategoryFactory.CreateCategoryDto("Test");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
             _updateCategoryDto = CreateCategoryFactory.CreateUpdateCategoryDto("UpdatedTest");
-
-            Action expected = () => _sut.Update(_category.Id, _updateCategoryDto);
+            Action expected = () => _sut.Update(fakeCategoryId, _updateCategoryDto);
+            
             expected.Should().ThrowExactly<CategoryNameIsExistException>();
         }
     }

@@ -8,7 +8,6 @@
         public int MinimumInventory { get; set; }
         public int SalesPrice { get; set; }
         public string UniqueCode { get; set; }
-
         public int CategoryId { get; set; }
     }
 }

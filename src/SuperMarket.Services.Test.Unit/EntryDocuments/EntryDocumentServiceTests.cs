@@ -37,7 +37,6 @@ namespace SuperMarket.Services.Test.Unit.EntryDocuments
             _entryDocumentRepository = new EFEntryDocumentRepository(_context);
             _goodsRepository = new EFGoodsRepository(_context);
             _sut = new EntryDocumentAppservice(_unitOfWork, _entryDocumentRepository, _goodsRepository);
-
         }
 
         [Fact]
@@ -61,7 +60,7 @@ namespace SuperMarket.Services.Test.Unit.EntryDocuments
         }
 
         [Fact]
-        public void AddThrowException_When_GoodsId_NotFound_In_EntryDocument()
+        public void AddThrowException_When_GoodsId_NotFound_In_EntryDocuments()
         {
             _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));

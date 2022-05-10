@@ -82,7 +82,6 @@ namespace SuperMarkets.Specs.SalesInvoices
         }
 
         [Then("فاکتور فروشی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  حدف میکنم")]
-
         public void Then()
         {
             _context.SalesInvoices.FirstOrDefault(_ => _.Id == _salesInvoice.Id)
@@ -90,13 +89,11 @@ namespace SuperMarkets.Specs.SalesInvoices
         }
 
         [And(" فاکتور فروشی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  نباید وجود داشته باشد")]
-
         public void ThenAnd()
         {
             _context.SalesInvoices.Should().HaveCount(0);
         }
-
-
+        
         [Fact]
         public void Run()
         {
