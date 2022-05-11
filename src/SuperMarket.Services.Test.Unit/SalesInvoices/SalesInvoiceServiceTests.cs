@@ -46,11 +46,11 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
             _sut = new SalesInvoiceAppService(_unitOfWork, _salesInvoiceRepository,_goodsRepository);
             _categoryRepository = new EFCategoryRepository(_context);
         }
-
+        
         [Fact]
         public void Add_adds_salesInvoice_properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
+            _category = CreateCategoryFactory.CreateCategoryDto("حشکبار");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
             _goods = CreateGoodsFactory.CreateGoods(_category.Id);

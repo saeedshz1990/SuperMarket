@@ -22,7 +22,7 @@ namespace SuperMarket.Services.Categories
             bool isCategoryNameExist = _categoryRepository
                 .IsCategoryExist(dto.Name);
 
-            if (isCategoryNameExist)
+            if (!isCategoryNameExist)
             {
                 throw new CategoryNameIsExistException();
             }
@@ -49,7 +49,7 @@ namespace SuperMarket.Services.Categories
         public void Delete(int id)
         {
             var category = _categoryRepository.GetById(id);
-            if (category==null)
+            if (category == null)
             {
                 throw new CategoryNotFoundException();
             }
@@ -60,14 +60,10 @@ namespace SuperMarket.Services.Categories
         public void Update(int id, UpdateCategoryDto dto)
         {
             var category = _categoryRepository.FindById(id);
-            var isCategoryNameExist = _categoryRepository
-                .IsCategoryExist(dto.Name);
-
-            if (!isCategoryNameExist)
+            if (category == null)
             {
                 throw new CategoryNameIsExistException();
             }
-
             category.Name = dto.Name;
             _unitOfWork.Commit();
         }

@@ -108,19 +108,19 @@ namespace SuperMarket.Services.Test.Unit.Categories
             _updateCategoryDto = CreateCategoryFactory.CreateUpdateCategoryDto("UpdatedTest");
 
             _sut.Update(_category.Id, _updateCategoryDto);
+            var expected = _context.Categories.FirstOrDefault(_ => _.Id == _category.Id);
 
-
-            _context.Categories.Should().Contain(_ => _.Name == _updateCategoryDto.Name);
+            expected.Name.Should().Be( _updateCategoryDto.Name);
         }
 
         [Fact]
         public void Update_ThrowException_When_CategoryNameIsNotExist()
         {
             var fakeCategoryId = 200;
-            _category = CreateCategoryFactory.CreateCategoryDto("Test");
+            _category = CreateCategoryFactory.CreateCategoryDto("Dummy");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
-            _updateCategoryDto = CreateCategoryFactory.CreateUpdateCategoryDto("UpdatedTest");
+            _updateCategoryDto = CreateCategoryFactory.CreateUpdateCategoryDto("UpdatedDummy");
             Action expected = () => _sut.Update(fakeCategoryId, _updateCategoryDto);
             
             expected.Should().ThrowExactly<CategoryNameIsExistException>();

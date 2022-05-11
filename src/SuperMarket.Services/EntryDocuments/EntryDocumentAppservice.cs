@@ -25,7 +25,8 @@ namespace SuperMarket.Services.EntryDocuments
         {
             bool isGoodsIdExist = _entryDocumentRepository.CheckGoodsIdExist(dto.GoodsId);
 
-            if (!isGoodsIdExist)
+            var findGoodsid = _entryDocumentRepository.FindByGoodsId(dto.GoodsId);
+            if (findGoodsid != null)
             {
                 throw new GoodIdNotFoundException();
             }

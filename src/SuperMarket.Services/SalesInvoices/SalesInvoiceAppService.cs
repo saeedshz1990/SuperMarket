@@ -25,10 +25,16 @@ namespace SuperMarket.Services.SalesInvoices
         public void Add(AddSalesInvoiceDto dto)
         {
             var checkGoodsId = _salesInvoiceRepository.GoodsIdCheckForExistence(dto.GoodsId);
-            if (!checkGoodsId)
+            var check = _salesInvoiceRepository.FindGoodsId(dto.GoodsId);
+            if (check==null)
             {
                 throw new GoodsIdNotFoundForSaleInvoicesException();
             }
+            
+            //if (!checkGoodsId)
+            //{
+            //    throw new GoodsIdNotFoundForSaleInvoicesException();
+            //}
 
             var salesInvoices = new SalesInvoice
             {
