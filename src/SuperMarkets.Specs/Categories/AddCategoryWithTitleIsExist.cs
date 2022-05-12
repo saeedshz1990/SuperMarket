@@ -55,7 +55,7 @@ namespace SuperMarkets.Specs.Categories
             {
                 Name = "لبنیات"
             };
-            _sut.Add(_dto);
+            expected = () => _sut.Add(_dto);
         }
 
         [Then("تنها یک دسته بندی با عنوان ' لبنیات' باید در فهرست دسته بندی کالا وجود داشته باشد")]
@@ -65,7 +65,7 @@ namespace SuperMarkets.Specs.Categories
             _context.Categories
                 .Should().Contain(_ => _.Name == _dto.Name);
         }
-
+        
         [And(": خطایی با عنوان 'عنوان دسته بندی کالا تکراریست ' باید رخ دهد")]
         public void ThenAnd()
         {

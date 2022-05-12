@@ -78,7 +78,7 @@ namespace SuperMarkets.Specs.Goodses
                 SalesPrice = 4000,
                 MinimumInventory = 5,
                 Count = 10,
-                UniqueCode = "YK-190",
+                UniqueCode = "YK-191",
                 CategoryId = _category.Id
             };
             _sut.Update(_goods.Id, _updateGoodsDto);

@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Test;
 using SuperMarket.Persistence.EF;
@@ -30,6 +31,8 @@ namespace SuperMarkets.Specs.Goodses
         private Category _category;
         private UpdateCategoryDto _updateCategoryDto;
         private AddGoodsDto _addGoodsDto;
+        private IList<GetGoodsDto> expected;
+
         public GetGoods(ConfigurationFixture configuration) : base(configuration)
         {
             _context = CreateDataContext();
@@ -68,16 +71,13 @@ namespace SuperMarkets.Specs.Goodses
         [When("درخواست نمایش تمام کالای های موجود در دسته بندی را می کنم")]
         public void When()
         {
-            _sut.GetAll();
+           expected= _sut.GetAll();
         }
 
         [Then("تنها کالایی با عنوان ‘ماست رامک’  با قیمت فروش’۲۰۰۰’  با کد کالا انحصاری’YR-190’با موجودی ‘۱۰’   جهت نمایش در فهرست کالا وجود داشته باشد")]
         public void Then()
         {
-            var expected = _sut.GetAll();
-
             expected.Should().HaveCount(0);
-            expected.Should().Contain(_ => _.Name == "ماست  رامک");
         }
 
         [Fact]

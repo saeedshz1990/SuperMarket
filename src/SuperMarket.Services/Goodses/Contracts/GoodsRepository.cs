@@ -18,6 +18,9 @@ namespace SuperMarket.Services.Goodses.Contracts
         IList<Goods> FindCategoryGoods(int categoryId);
         bool ExistNameGoods(string name);
         IList<Goods> GetListOfCategory(int categoryId);
+        bool IsCheckGoodsNameWithUniqueCode(string uniqueCode);
+        bool IsExistGoodsName(string name,int categoryId);
+
     }
 }
 

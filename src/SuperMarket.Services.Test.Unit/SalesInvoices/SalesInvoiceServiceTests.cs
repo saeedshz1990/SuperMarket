@@ -43,37 +43,27 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
             _unitOfWork = new EFUnitOfWork(_context);
             _salesInvoiceRepository = new EFSalesInvoiceRepository(_context);
             _goodsRepository = new EFGoodsRepository(_context);
-            _sut = new SalesInvoiceAppService(_unitOfWork, _salesInvoiceRepository,_goodsRepository);
+            _sut = new SalesInvoiceAppService(_unitOfWork, _salesInvoiceRepository, _goodsRepository);
             _categoryRepository = new EFCategoryRepository(_context);
         }
-        
+
         [Fact]
         public void Add_adds_salesInvoice_properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("حشکبار");
+            _category = CreateCategoryFactory.CreateCategoryDto("Dummy");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
             _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Add(_goods));
+            _context.Manipulate(_ => _.Goods.Add(_goods));
 
             _addSalesInvoiceDto = CreateSalesInvoiceFactory.CreateAddSalesInvoice(_goods.Id);
             _sut.Add(_addSalesInvoiceDto);
 
-            _context.SalesInvoices.Should().HaveCount(1);
-        }
-
-        [Fact]
-        public void AddThrow_Exception_When_GoodsId_NotFound()
-        {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
-
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Add(_goods));
-            
-            _addSalesInvoiceDto = CreateSalesInvoiceFactory.CreateAddSalesInvoice(_goods.Id);
-            Action expected = () => _sut.Add(_addSalesInvoiceDto);
-            expected.Should().ThrowExactly<GoodsIdNotFoundForSaleInvoicesException>();
+            _context.SalesInvoices.Should().Contain(_ => _.GoodsId == _addSalesInvoiceDto.GoodsId);
+            _context.SalesInvoices.Should().Contain(_ => _.Count == _addSalesInvoiceDto.Count);
+            _context.SalesInvoices.Should().Contain(_ => _.SalesPrice == _addSalesInvoiceDto.SalesPrice);
+            _context.SalesInvoices.Should().Contain(_ => _.SalesDate == _addSalesInvoiceDto.SalesDate);
+            _context.SalesInvoices.Should().Contain(_ => _.CustomerName == _addSalesInvoiceDto.CustomerName);
         }
 
         [Fact]
@@ -87,7 +77,7 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
 
             _salesInvoice = CreateSalesInvoiceFactory.CreateSalesInvoice(_goods.Id);
             _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
-           
+
             _sut.Delete(_salesInvoice.Id);
 
             _context.SalesInvoices.FirstOrDefault(_ => _.Id == _salesInvoice.Id).Should().BeNull();
@@ -102,8 +92,8 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
             Action expected = () => _sut.Delete(fakeId);
             expected.Should().ThrowExactly<SalesInvoiceNotFoundException>();
         }
-        
-       [Fact]
+
+        [Fact]
         public void Update_updates_SalesInvoices_Properly()
         {
             _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
@@ -114,7 +104,7 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
 
             _salesInvoice = CreateSalesInvoiceFactory.CreateSalesInvoice(_goods.Id);
             _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
-            
+
             _updateSalesInvoiceDto = CreateSalesInvoiceFactory.CreateUpdateSalesInvoiceDto("SaeedAnsari",
                 5, 2000, DateTime.Now.Date, _goods.Id);
 
@@ -132,14 +122,14 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
 
             _salesInvoice = CreateSalesInvoiceFactory.CreateSalesInvoice(_goods.Id);
             _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
-            
+
             _updateSalesInvoiceDto = CreateSalesInvoiceFactory
                 .CreateUpdateSalesInvoiceDto("SaeedAnsari", 5,
                     2000, DateTime.Now.Date, _goods.Id);
 
             Action expected = () => _sut.Update(2, _updateSalesInvoiceDto);
-    
-             expected.Should().ThrowExactly<SalesInvoicesNotExistException>();
+
+            expected.Should().ThrowExactly<SalesInvoicesNotExistException>();
         }
 
         [Fact]
@@ -153,7 +143,7 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
 
             _salesInvoice = CreateSalesInvoiceFactory.CreateSalesInvoice(_goods.Id);
             _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
-            
+
             var expected = _sut.GetAll();
 
             expected.Should().HaveCount(1);

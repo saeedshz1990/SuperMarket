@@ -59,7 +59,6 @@ namespace SuperMarkets.Specs.SalesInvoices
         [And("کالایی با عنوان ‘ماست رامک’  با قیمت فروش ‘۲۰۰۰’  با کد کالا انحصاری’YR-190’ با موجودی ‘۱۰’  تعریف می کنم")]
         public void GivenAnd()
         {
-            var categoryId = _categoryRepository.FindById(_category.Id);
             _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
         }

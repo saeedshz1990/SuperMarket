@@ -76,7 +76,7 @@ namespace SuperMarkets.Specs.Goodses
                 SalesPrice = 2000,
                 MinimumInventory = 5,
                 Count = 10,
-                UniqueCode = "YK-191",
+                UniqueCode = "YK-190",
                 CategoryId = _category.Id
             };
             expected = () => _sut.Add(_addGoodsDto);
@@ -85,8 +85,7 @@ namespace SuperMarkets.Specs.Goodses
         [Then("تنها کالایی با عنوان ‘ماست رامک’  با قیمت فروش’۲۰۰۰’  با کد کالا انحصاری’YR-190’   با موجودی ‘۱۰’  تعریف می کنم")]
         public void Then()
         {
-            _context.Goods.Count().Should().Be(1);
-            _context.Goods.Should().Contain(_ => _.Name == _addGoodsDto.Name);
+            _context.Goods.Should().HaveCount(1);
         }
 
         [And("خطایی با عنوان ‘عنوان کالا تکراری است  ‘ باید رخ دهد.")]

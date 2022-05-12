@@ -21,7 +21,7 @@ namespace SuperMarkets.Specs.Categories
         IWantTo = "دسته بندی کالا مدیریت کنم",
         InOrderTo = "کالا های خود را دسته بندی کنم"
     )]
-    public class DeleteCategoryWithGoods :EFDataContextDatabaseFixture
+    public class DeleteCategoryWithGoods : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _context;
         private readonly UnitOfWork _unitOfWork;
@@ -54,15 +54,15 @@ namespace SuperMarkets.Specs.Categories
         [And("کالایی با عنوان ‘ماست رامک’  با قیمت فروش’۲۰۰۰’  با کد کالا انحصاری’YR-190’   با موجودی ‘۱۰’ در دسته بندی کالا موجود می باشد")]
         public void GivenAnd()
         {
-              _goods = new Goods
-              {
-                  Name = "ماست رامک",
-                  SalesPrice = 2000,
-                  MinimumInventory = 5,
-                  Count = 10,
-                  UniqueCode = "YR-190",
-                  CategoryId = _category.Id
-              };
+            _goods = new Goods
+            {
+                Name = "ماست رامک",
+                SalesPrice = 2000,
+                MinimumInventory = 5,
+                Count = 10,
+                UniqueCode = "YR-190",
+                CategoryId = _category.Id,
+            };
 
             _context.Manipulate(_ => _.Goods.Add(_goods));
         }
@@ -76,14 +76,14 @@ namespace SuperMarkets.Specs.Categories
         [Then("دسته بندی با عنوان 'لبنیات'در فهرست دسته بندی کالا باید وجود داشته باشد")]
         public void Then()
         {
-            _context.Categories.Count().Should().Be(1);
-            _context.Categories.Should().Contain(_ => _.Id == _category.Id);
+            _context.Categories.Should().HaveCount(1);
+
         }
 
         [And("خطایی با عنوان ‘امکان حذف بدلیل وجود کالا در این دسته امکان پذیر نمی باشد’  باید رخ دهد")]
         public void ThenAnd()
         {
-            expected.Should().ThrowExactly<ThisCategoryHasGoodsException>();
+            expected.Should().ThrowExactly<CategoryHasGoodsException>();
         }
 
         [Fact]

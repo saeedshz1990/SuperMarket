@@ -25,6 +25,7 @@ namespace SuperMarket.Services.Test.Unit.Goodses
         private readonly GoodsRepository _goodsRepository;
         private readonly UnitOfWork _unitOfWork;
         private Goods _goods;
+        private Goods _secondGoods;
         private AddGoodsDto _addGoodsDto;
         private GetGoodsDto _getGoodsDto;
         private UpdateGoodsDto _updateGoodsDto;
@@ -43,11 +44,9 @@ namespace SuperMarket.Services.Test.Unit.Goodses
         [Fact]
         public void Add_adds_Goods_Properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneCategory();
 
             _addGoodsDto = CreateGoodsFactory.CreateAddGoods(_category.Id);
-
             _sut.Add(_addGoodsDto);
 
             var expected = _context.Goods.FirstOrDefault();
@@ -59,67 +58,81 @@ namespace SuperMarket.Services.Test.Unit.Goodses
             expected.UniqueCode.Should().Be(_addGoodsDto.UniqueCode);
             expected.Category.Id.Should().Be(_category.Id);
         }
-
+        
         [Fact]
         public void Add_ThrowException_When_DuplicateGoodsName_In_OneCategory_WhenAddingGoods()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Add(_category));
+            CreateOneCategory();
+            _goods = new Goods
+            {
+                Name = "Dummy",
+                Count = 18,
+                MinimumInventory = 9,
+                SalesPrice = 7800,
+                UniqueCode = "YD-999",
+                CategoryId = _category.Id
+            };
+            _context.Manipulate(_ => _.Goods.Add(_goods));
+            _addGoodsDto = new AddGoodsDto
+            {
+                Name = _goods.Name,
+                Count = _goods.Count,
+                MinimumInventory = _goods.MinimumInventory,
+                SalesPrice = _goods.SalesPrice,
+                UniqueCode = _goods.UniqueCode,
+                CategoryId = _category.Id
+            };
 
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Add(_goods));
-
-            _addGoodsDto = CreateGoodsFactory.CreateAddGoodsDto("ماست رامک", 3,
-                2, 1000, "YR-190", _category.Id);
             Action expected = () => _sut.Add(_addGoodsDto);
             
             expected.Should().ThrowExactly<GoodsNameExistInThisCategoryException>();
         }
-
+   
         [Fact]
         public void Add_ThrowException_When_Category_Not_Found()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneCategory();
 
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Goods.Add(_goods));
-            _addGoodsDto = CreateGoodsFactory.CreateAddGoodsDto("ماست کاله", 3,
-                2, 1000, "UY-234", 2);
-            
+           CreateOneGoods();
+           
+            CreateOneGoodsDto();
             Action expected = () => _sut.Add(_addGoodsDto);
+            
             expected.Should().ThrowExactly<CategoryNotFoundException>();
         }
-        
+
         [Fact]
         public void Update_updates_Goods_Properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneCategory();
+            CreateOneGoods();
 
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Add(_goods));
-            
-            _updateGoodsDto = CreateGoodsFactory.CreateUpdateGoods(_category.Id);
+            _updateGoodsDto = new UpdateGoodsDto
+            {
+                Name = "ماست قنبرزاده",
+                SalesPrice = 3000,
+                MinimumInventory = 5,
+                Count = 15,
+                UniqueCode = "YK-191",
+                CategoryId = _category.Id
+            };
             _sut.Update(_goods.Id, _updateGoodsDto);
-            
-            var expected = _context.Goods.FirstOrDefault(_ => _.Id == _goods.Id);
-            expected.Name.Should().Be(_updateGoodsDto.Name);
-            expected.SalesPrice.Should().Be(_updateGoodsDto.SalesPrice);
-            expected.MinimumInventory.Should().Be(_updateGoodsDto.MinimumInventory);
-            expected.Count.Should().Be(_updateGoodsDto.Count);
-            expected.UniqueCode.Should().Be(_updateGoodsDto.UniqueCode);
-            expected.CategoryId.Should().Be(_updateGoodsDto.CategoryId);
-        }
 
+            _context.Goods.Should().Contain(_ => _.Id == _goods.Id);
+            _context.Goods.Should().Contain(_ =>_.Name == _updateGoodsDto.Name);
+            _context.Goods.Should().Contain(_ => _.SalesPrice == _updateGoodsDto.SalesPrice);
+            _context.Goods.Should().Contain(_ => _.MinimumInventory == _updateGoodsDto.MinimumInventory);
+            _context.Goods.Should().Contain(_ => _.Count == _updateGoodsDto.Count);
+            _context.Goods.Should().Contain(_ => _.UniqueCode == _updateGoodsDto.UniqueCode);
+            _context.Goods.Should().Contain(_ => _.CategoryId == _category.Id);
+        }
+        
         [Fact]
         public void Delete_deletes_Goods_Properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneCategory();
 
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Goods.Add(_goods));
+            CreateOneGoods();
 
             _sut.Delete(_goods.Id);
             _context.Goods.Count().Should().Be(0);
@@ -134,5 +147,37 @@ namespace SuperMarket.Services.Test.Unit.Goodses
 
             expected.Should().ThrowExactly<GoodsIdNotExistInThisCategoryException>();
         }
+
+        private void CreateOneCategory()
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("Dummy");
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
+
+        private void CreateOneGoods()
+        {
+            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
+            _context.Manipulate(_ => _.Add(_goods));
+        }
+        private void CreateOneGodsYouthrtGhanbarzadeh()
+        {
+            _secondGoods = new Goods
+            {
+                Name = "ماست قنبرزاده",
+                SalesPrice = 3000,
+                MinimumInventory = 5,
+                Count = 15,
+                UniqueCode = "YK-191",
+                CategoryId = _category.Id
+            };
+            _context.Manipulate(_ => _.Goods.Add(_secondGoods));
+        }
+
+        private void CreateOneGoodsDto()
+        {
+            _addGoodsDto = CreateGoodsFactory.CreateAddGoodsDto("ماست کاله", 3,
+                2, 1000, "UY-234", 2);
+        }
+
     }
 }

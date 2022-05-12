@@ -1,4 +1,5 @@
-﻿using SuperMarket.Entities;
+﻿using System;
+using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Application;
 using SuperMarket.Services.Categories.Contracts;
 using SuperMarket.Services.Categories.Exceptions;
@@ -27,6 +28,17 @@ namespace SuperMarket.Services.Goodses
 
         public void Add(AddGoodsDto dto)
         {
+            bool getCategoryId = _categoryRepository.FindCategoryById(dto.CategoryId);
+            if (!getCategoryId)
+            {
+                throw new CategoryNotFoundException();
+            }
+
+            bool goodsNameExist = _goodsRepository.IsExistGoodsName(dto.Name, dto.CategoryId);
+            if (goodsNameExist)
+            {
+                throw new GoodsNameExistInThisCategoryException();
+            }
             _goods = new Goods
             {
                 Name = dto.Name,
@@ -36,18 +48,6 @@ namespace SuperMarket.Services.Goodses
                 MinimumInventory = dto.MinimumInventory,
                 Count = dto.Count,
             };
-
-            bool getCategoryId = _categoryRepository.FindCategoryById(dto.CategoryId);
-            if (!getCategoryId)
-            {
-                throw new CategoryNotFoundException();
-            }
-
-            bool goodsNameExist = _goodsRepository.ExistNameGoods(dto.UniqueCode);
-            if (goodsNameExist)
-            {
-                throw new GoodsNameExistInThisCategoryException();
-            }
             _goodsRepository.Add(_goods);
             _unitOfWork.Commit();
         }
@@ -80,10 +80,20 @@ namespace SuperMarket.Services.Goodses
             var goods = _goodsRepository.FindById(id);
             if (goods == null)
             {
+                throw new GoodsIdNotExistInThisCategoryException();
+            }
+            bool checkGoods = _goodsRepository.ExistNameGoods(dto.Name);
+            if (checkGoods)
+            {
+                throw new DuplicateGoodsNameInCategoryException();
+            }
+            var a = _goodsRepository.IsExistGoodsName(dto.Name, dto.CategoryId);
+
+            if (a)
+            {
                 throw new DuplicateGoodsNameInCategoryException();
             }
 
-            _goodsRepository.ExistGoodsIdCheck(id);
             goods.Name = dto.Name;
             goods.CategoryId = dto.CategoryId;
             goods.UniqueCode = dto.UniqueCode;

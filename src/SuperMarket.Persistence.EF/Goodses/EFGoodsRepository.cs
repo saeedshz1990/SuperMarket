@@ -125,5 +125,15 @@ namespace SuperMarket.Persistence.EF.Goodses
                 }).Where(_ => _.CategoryId == categoryId)
                 .ToList();
         }
+
+        public bool IsCheckGoodsNameWithUniqueCode(string uniqueCode)
+        {
+            return _context.Goods.Any(_ => _.UniqueCode == uniqueCode);
+        }
+
+        public bool IsExistGoodsName(string name, int categoryId)
+        {
+            return _context.Goods.Any(_ => _.Name == name && _.CategoryId == categoryId);
+        }
     }
 }

@@ -7,13 +7,13 @@ using SuperMarket.Services.Goodses.Contracts;
 
 namespace SuperMarket.Services.EntryDocuments
 {
-    public class EntryDocumentAppservice : EntryDocumentService
+    public class EntryDocumentAppService : EntryDocumentService
     {
         private readonly EntryDocumentRepository _entryDocumentRepository;
         private readonly UnitOfWork _unitOfWork;
         private readonly GoodsRepository _goodsRepository;
 
-        public EntryDocumentAppservice(UnitOfWork unitOfWork,
+        public EntryDocumentAppService(UnitOfWork unitOfWork,
             EntryDocumentRepository entryDocumentRepository, GoodsRepository goodsRepository)
         {
             _unitOfWork = unitOfWork;
@@ -24,13 +24,11 @@ namespace SuperMarket.Services.EntryDocuments
         public void Add(AddEntryDocumentDto dto)
         {
             bool isGoodsIdExist = _entryDocumentRepository.CheckGoodsIdExist(dto.GoodsId);
-
-            var findGoodsid = _entryDocumentRepository.FindByGoodsId(dto.GoodsId);
-            if (findGoodsid != null)
+            if (isGoodsIdExist)
             {
                 throw new GoodIdNotFoundException();
             }
-
+            
             var entryDocument = new EntryDocument
             {
                 GoodsId = dto.GoodsId,

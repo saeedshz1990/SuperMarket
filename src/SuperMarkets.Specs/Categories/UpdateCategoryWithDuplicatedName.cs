@@ -48,7 +48,7 @@ namespace SuperMarkets.Specs.Categories
             _context.Manipulate(_ => _.Categories.Add(_category));
         }
 
-        [Given("دسته بندی با عنوان 'خشکبار’ 'در فهرست دسته بندی کالا وجود دارد")]
+        [And("دسته بندی با عنوان 'خشکبار’ 'در فهرست دسته بندی کالا وجود دارد")]
         public void GivenAnd()
         {
             _category = new Category

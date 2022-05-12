@@ -49,7 +49,7 @@ namespace SuperMarkets.Specs.EntryDocuments
             _context = CreateDataContext();
             _unitOfWork = new EFUnitOfWork(_context);
             _entryDocumentRepository = new EFEntryDocumentRepository(_context);
-            _sut = new EntryDocumentAppservice(_unitOfWork, _entryDocumentRepository, _goodsRepository);
+            _sut = new EntryDocumentAppService(_unitOfWork, _entryDocumentRepository, _goodsRepository);
             _goodsRepository = new EFGoodsRepository(_context);
             _goodsService = new GoodsAppService(_unitOfWork, _goodsRepository, _categoryRepository);
             _categoryRepository = new EFCategoryRepository(_context);

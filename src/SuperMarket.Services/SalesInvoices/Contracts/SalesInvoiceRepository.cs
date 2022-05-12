@@ -4,7 +4,7 @@ using SuperMarket.Infrastructure.Application;
 
 namespace SuperMarket.Services.SalesInvoices.Contracts
 {
-    public interface SalesInvoiceRepository :Repository
+    public interface SalesInvoiceRepository : Repository
     {
         void Add(SalesInvoice salesInvoice);
         IList<GetSalesInvoiceDto> GetAll();
@@ -17,5 +17,7 @@ namespace SuperMarket.Services.SalesInvoices.Contracts
         bool GoodsIdCheckForExistence(int goodsId);
         IList<SalesInvoice> FindGoodsId(int goodsId);
         bool FindByIds(int id);
+        SalesInvoice FindBySalesInvoicesByGoodsId(int goodsId);
+
     }
 }

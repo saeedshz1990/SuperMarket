@@ -93,5 +93,10 @@ namespace SuperMarket.Persistence.EF.SalesInvoices
                 .SalesInvoices
                 .Any(x => x.Id == id);
         }
+
+        public SalesInvoice FindBySalesInvoicesByGoodsId(int goodsId)
+        {
+            return _context.SalesInvoices.FirstOrDefault(x => x.GoodsId == goodsId);
+        }
     }
 }

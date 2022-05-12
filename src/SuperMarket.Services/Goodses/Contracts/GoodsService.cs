@@ -11,5 +11,6 @@ namespace SuperMarket.Services.Goodses.Contracts
         IList<GetGoodsDto> GetAll();
         void Delete(int id);
         void Update(int id, UpdateGoodsDto dto);
+
     }
 }

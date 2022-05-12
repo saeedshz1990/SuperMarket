@@ -12,10 +12,7 @@ namespace SuperMarket.Persistence.EF.Goodses
 
             _.HasKey(_ => _.Id);
 
-            _.Property(_ => _.Id)
-                .IsRequired();
-
-            _.Property(_ => _.Id)
+           _.Property(_ => _.Id)
                 .ValueGeneratedOnAdd();
 
             
@@ -35,16 +32,10 @@ namespace SuperMarket.Persistence.EF.Goodses
             _.Property(_ => _.UniqueCode)
                 .IsRequired();
 
-            _.Property(_ => _.EntryDocumentId)
-                .HasDefaultValue(1);//
-            
-            _.Property(_ => _.SalesInvoiceId)
-                .HasDefaultValue(1);//
-
             _.HasOne(_ => _.Category)
                 .WithMany(_ => _.Goods)
                 .HasForeignKey(_ => _.CategoryId)
-                .OnDelete(DeleteBehavior.ClientNoAction);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

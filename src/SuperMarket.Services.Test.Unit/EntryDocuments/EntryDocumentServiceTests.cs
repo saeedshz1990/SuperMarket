@@ -36,7 +36,7 @@ namespace SuperMarket.Services.Test.Unit.EntryDocuments
             _unitOfWork = new EFUnitOfWork(_context);
             _entryDocumentRepository = new EFEntryDocumentRepository(_context);
             _goodsRepository = new EFGoodsRepository(_context);
-            _sut = new EntryDocumentAppservice(_unitOfWork, _entryDocumentRepository, _goodsRepository);
+            _sut = new EntryDocumentAppService(_unitOfWork, _entryDocumentRepository, _goodsRepository);
         }
 
         [Fact]
@@ -68,6 +68,9 @@ namespace SuperMarket.Services.Test.Unit.EntryDocuments
             _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
 
+            var addEnterDocumentSecond = CreateEntryDocumentsFactory.CreateEntryDocumentDto(_goods.Id);
+            _context.Manipulate(_ => _.EntryDocuments.Add(addEnterDocumentSecond));
+            
             _addEntryDocumentDto = CreateEntryDocumentsFactory.CreateAddEntryDocumentDto(_goods.Id);
 
             Action expected = () => _sut.Add(_addEntryDocumentDto);

@@ -36,12 +36,9 @@ namespace SuperMarket.Services.Test.Unit.Categories
         [Fact]
         public void Add_adds_Category_Properly()
         {
-            _dto = CreateCategoryFactory.CreateAddCategoryDto("لبنیات");
+            _dto = CreateCategoryFactory.CreateAddCategoryDto("Dummy");
             _sut.Add(_dto);
-
-            var expected = _context.Categories.FirstOrDefault();
-
-            expected.Name.Should().Be(_dto.Name);
+            _context.Categories.Should().Contain(_ => _.Name == _dto.Name);
         }
 
         [Fact]
@@ -50,9 +47,9 @@ namespace SuperMarket.Services.Test.Unit.Categories
             _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
-            _dto = CreateCategoryFactory.CreateAddCategoryDto("حشکبار");
-
+            _dto = CreateCategoryFactory.CreateAddCategoryDto("لبنیات");
             Action expected = () => _sut.Add(_dto);
+            
             expected.Should().ThrowExactly<CategoryNameIsExistException>();
         }
 
@@ -114,16 +111,26 @@ namespace SuperMarket.Services.Test.Unit.Categories
         }
 
         [Fact]
-        public void Update_ThrowException_When_CategoryNameIsNotExist()
+        public void Update_ThrowException_When_CategoryNameDoesNotExist()
         {
-            var fakeCategoryId = 200;
-            _category = CreateCategoryFactory.CreateCategoryDto("Dummy");
+         _category = CreateCategoryFactory.CreateCategoryDto("Dummy");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
-            _updateCategoryDto = CreateCategoryFactory.CreateUpdateCategoryDto("UpdatedDummy");
-            Action expected = () => _sut.Update(fakeCategoryId, _updateCategoryDto);
+            _updateCategoryDto = CreateCategoryFactory.CreateUpdateCategoryDto("Dummy");
+            Action expected = () => _sut.Update(_category.Id, _updateCategoryDto);
             
             expected.Should().ThrowExactly<CategoryNameIsExistException>();
         }
+
+        [Fact]
+        public void Update_ThrowException_When_CategoryIdDoesNotExist()
+        {
+            var fakeCategoryId = 200;
+            _updateCategoryDto = CreateCategoryFactory.CreateUpdateCategoryDto("Dummy");
+            Action expected = () => _sut.Update(fakeCategoryId, _updateCategoryDto);
+
+            expected.Should().ThrowExactly<CategoryNotFoundException>();
+        }
+
     }
 }

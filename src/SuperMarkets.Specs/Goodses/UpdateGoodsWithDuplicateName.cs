@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
 using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Test;
@@ -48,7 +49,7 @@ namespace SuperMarkets.Specs.Goodses
         {
             _category = new Category()
             {
-                Name = "حشکبار"
+                Name = "پروتئینی"
 
             };
             _context.Manipulate(_ => _context.Categories.Add(_category));
@@ -72,7 +73,7 @@ namespace SuperMarkets.Specs.Goodses
         [And("کالایی با عنوان ‘ماست قنبرزاده  با قیمت فروش’۳۰۰۰’  با کد کالا انحصاری’YR-191’   با موجودی ‘۱۵’  تعریف می کنم")]
         public void GivenSecondAnd()
         {
-            _goods = new Goods
+            _secondGoods = new Goods
             {
                 Name = "ماست قنبرزاده",
                 SalesPrice = 3000,
@@ -81,7 +82,7 @@ namespace SuperMarkets.Specs.Goodses
                 UniqueCode = "YK-191",
                 CategoryId = _category.Id
             };
-            _context.Manipulate(_ => _context.Goods.Add(_goods));
+            _context.Manipulate(_ => _context.Goods.Add(_secondGoods));
         }
         
         [When("کد کالا انحصاری’YR-191’   با قیمت فروش’۴۰۰۰’  با عنوان ‘ماست رامک’    با موجودی ‘۱۰’  ویرایش می کنم")]
@@ -89,31 +90,26 @@ namespace SuperMarkets.Specs.Goodses
         {
             _updateGoodsDto = new UpdateGoodsDto
             {
-                Name = "ماست رامک",
-                SalesPrice = 4000,
+                Name = "ماست قنبرزاده",
+                SalesPrice = 3000,
                 MinimumInventory = 5,
-                Count = 10,
+                Count = 15,
                 UniqueCode = "YK-191",
                 CategoryId = _category.Id
             };
-            Action expected = () => _sut.Update(_goods.Id, _updateGoodsDto);
+             expected = () => _sut.Update(_secondGoods.Id, _updateGoodsDto);
         }
         
         [Then("کالایی با عنوان ‘ماست قنبرزاده  با قیمت فروش’۳۰۰۰’  با کد کالا انحصاری’YR-191’   با موجودی ‘۱۵’ باید وجود داشته باشد")]
         public void Then()
         {
-            _context.Goods.Should().Contain(_ => _.Name == _secondGoods.Name);
-            _context.Goods.Should().Contain(_ => _.CategoryId == _secondGoods.CategoryId);
-            _context.Goods.Should().Contain(_ => _.SalesPrice == _secondGoods.SalesPrice);
-            _context.Goods.Should().Contain(_ => _.MinimumInventory == _secondGoods.MinimumInventory);
-            _context.Goods.Should().Contain(_ => _.Count == _secondGoods.Count);
-            _context.Goods.Should().Contain(_ => _.UniqueCode == _secondGoods.UniqueCode);
+            _context.Goods.Where(_ => _.Name == _updateGoodsDto.Name).Should().HaveCount(1);
         }
 
         [And("خطایی با عنوان ‘عنوان کالا تکراری می باشد’ باید رخ دهد")]
         public void ThenAnd()
         {
-            expected.Should().Throw<DuplicateGoodsNameInCategoryException>();
+            expected.Should().ThrowExactly<DuplicateGoodsNameInCategoryException>();
         }
 
         [Fact]
