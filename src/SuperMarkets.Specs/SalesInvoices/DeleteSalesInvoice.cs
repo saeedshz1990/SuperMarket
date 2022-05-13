@@ -49,20 +49,66 @@ namespace SuperMarkets.Specs.SalesInvoices
         [Given("دسته بندی کالا با عنوان ‘لبنیات ‘  تعریف می کنیم")]
         public void Given()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateCategory();
         }
 
         [And("کالایی با عنوان ‘ماست رامک’  با قیمت فروش ‘۲۰۰۰’  با کد کالا انحصاری’YR-190’ با موجودی ‘۱۰’  تعریف می کنم")]
         public void GivenFirstAnd()
         {
-            var categoryId = _categoryRepository.FindById(_category.Id);
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Goods.Add(_goods));
+           CreateGoods();
         }
 
         [And("فرض می کنیم : کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  می فروشیم")]
         public void GivenSecondAnd()
+        {
+            CreateSalesInvoices();
+        }
+        
+        [When("فاکتور فروشی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  تعریف می کنیم")]
+        public void When()
+        {
+            _sut.Delete(_salesInvoice.Id);
+        }
+
+        [Then("فاکتور فروشی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  حدف میکنم")]
+        public void Then()
+        {
+            _context.SalesInvoices
+                .FirstOrDefault(_ => _.Id == _salesInvoice.Id)
+                .Should()
+                .BeNull();
+        }
+
+        [And(" فاکتور فروشی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  نباید وجود داشته باشد")]
+        public void ThenAnd()
+        {
+            _context.SalesInvoices.Should().HaveCount(0);
+        }
+
+        [Fact]
+        public void Run()
+        {
+            Runner.RunScenario(
+                _ => Given()
+                , _ => GivenFirstAnd()
+                , _ => GivenSecondAnd()
+                , _ => When()
+                , _ => Then()
+                , _ => ThenAnd()
+            );
+        }
+
+        private void CreateCategory()
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
+        private void CreateGoods()
+        {
+            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
+            _context.Manipulate(_ => _.Goods.Add(_goods));
+        }
+        private void CreateSalesInvoices()
         {
             _salesInvoice = new SalesInvoice
             {
@@ -75,36 +121,5 @@ namespace SuperMarkets.Specs.SalesInvoices
             _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
         }
 
-        [When("فاکتور فروشی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  تعریف می کنیم")]
-        public void When()
-        {
-            _sut.Delete(_salesInvoice.Id);
-        }
-
-        [Then("فاکتور فروشی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  حدف میکنم")]
-        public void Then()
-        {
-            _context.SalesInvoices.FirstOrDefault(_ => _.Id == _salesInvoice.Id)
-                .Should().BeNull();
-        }
-
-        [And(" فاکتور فروشی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  نباید وجود داشته باشد")]
-        public void ThenAnd()
-        {
-            _context.SalesInvoices.Should().HaveCount(0);
-        }
-        
-        [Fact]
-        public void Run()
-        {
-            Runner.RunScenario(
-                _ => Given()
-                ,_=>GivenFirstAnd()
-                , _ => GivenSecondAnd()
-                , _ => When()
-                , _ => Then()
-                , _ => ThenAnd()
-            );
-        }
     }
 }

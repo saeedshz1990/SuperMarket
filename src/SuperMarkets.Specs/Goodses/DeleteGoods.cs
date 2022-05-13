@@ -43,28 +43,13 @@ namespace SuperMarkets.Specs.Goodses
         [Given("دسته بندی با عنوان 'لبنیات'در فهرست دسته بندی کالا وجود دارد")]
         public void Given()
         {
-            _category = new Category()
-            {
-                Name = "لبنیات"
-
-            };
-            _context.Manipulate(_ => _context.Categories.Add(_category));
+            CreateOneCategory();
         }
 
         [And("کالایی با عنوان ‘ماست رامک’ با قیمت فروش’۲۰۰۰’  با کد کالا انحصاری’YR-190’با موجودی ‘۱۰’  تعریف می کنم")]
         public void GivenAnd()
         {
-            _goods = new Goods
-            {
-                Name = "ماست رامک",
-                SalesPrice = 5000,
-                MinimumInventory = 5,
-                Count = 10,
-                UniqueCode = "YK-190",
-                CategoryId = _category.Id
-
-            };
-            _context.Manipulate(_ => _context.Goods.Add(_goods));
+            CreateOneGoods();
         }
         
         [When("کالایی با عنوان 'ماست کاله' و قیمت '5000' و تعداد '20' و حداقل موجودی '5' از دسته بندی 'لبنیات' حذف میکنیم")]
@@ -88,6 +73,29 @@ namespace SuperMarkets.Specs.Goodses
             GivenAnd();
             When();
             Then();
+        }
+
+        private void CreateOneCategory()
+        {
+            _category = new Category()
+            {
+                Name = "لبنیات"
+            };
+            _context.Manipulate(_ => _context.Categories.Add(_category));
+        }
+        
+        private void CreateOneGoods()
+        {
+            _goods = new Goods
+            {
+                Name = "ماست رامک",
+                SalesPrice = 2000,
+                MinimumInventory = 5,
+                Count = 10,
+                UniqueCode = "YR-190",
+                CategoryId = _category.Id
+            };
+            _context.Manipulate(_ => _.Goods.Add(_goods));
         }
     }
 }

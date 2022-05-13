@@ -39,12 +39,7 @@ namespace SuperMarkets.Specs.Categories
         [Given(" دسته بندی با عنوان 'لبنیات'در فهرست دسته بندی کالا وجود دارد")]
         public void Given()
         {
-            _category = new Category
-            {
-                Name = "لبنیات"
-            };
-
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateCategory();
         }
 
         [When("درخواست مشاهده فهرست کالا را میدهم")]
@@ -56,7 +51,6 @@ namespace SuperMarkets.Specs.Categories
         [Then("دسته بندی با عنوان ‘لبنیات’ در فهرست دسته بندی کالا باید وجود داشته باشد")]
         public void Then()
         {
-
             var expected = _sut.GetAll();
             expected.Should().HaveCount(1);
             expected.Should().Contain(_ => _.Name == _category.Name);
@@ -68,6 +62,15 @@ namespace SuperMarkets.Specs.Categories
             Given();
             When();
             Then();
+        }
+
+        private void CreateCategory()
+        {
+            _category = new Category
+            {
+                Name = "لبنیات"
+            };
+            _context.Manipulate(_ => _.Categories.Add(_category));
         }
     }
 }

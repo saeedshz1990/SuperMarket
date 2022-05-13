@@ -42,14 +42,10 @@ namespace SuperMarkets.Specs.Categories
         [When("دسته بندی با عنوان ‘لبنیات’ تعریف می کنم")]
         public void When()
         {
-            _dto = new AddCategoryDto
-            {
-                Name = "لبنیات"
-            };
-
+            CreateCategoryDto();
             _sut.Add(_dto);
         }
-
+        
         [Then("دسته بندی با عنوان ‘لبنیات’ در فهرست دسته بندی کالا باید وجود داشته باشد")]
         public void Then()
         {
@@ -63,6 +59,13 @@ namespace SuperMarkets.Specs.Categories
             Given();
             When();
             Then();
+        }
+        private void CreateCategoryDto()
+        {
+            _dto = new AddCategoryDto
+            {
+                Name = "لبنیات"
+            };
         }
     }
 }

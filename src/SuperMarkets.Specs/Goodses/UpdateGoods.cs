@@ -45,45 +45,22 @@ namespace SuperMarkets.Specs.Goodses
         [Given("کالایی با عنوان 'ماست رامک'در فهرست کالا وجود دارد")]
         public void Given()
         {
-            _category = new Category()
-            {
-                Name = "لبنیات"
-
-            };
-            _context.Manipulate(_ => _context.Categories.Add(_category));
-
+            CreateOneCategory();
         }
-
+        
         [And("کالایی با عنوان ‘ماست رامک’  با قیمت فروش’۲۰۰۰’  با کد کالا انحصاری’YR-190’   با موجودی ‘۱۰’  تعریف می کنم")]
         public void GivenAnd()
         {
-            _goods = new Goods
-            {
-                Name = "ماست رامک",
-                SalesPrice = 2000,
-                MinimumInventory = 5,
-                Count = 10,
-                UniqueCode = "YK-190",
-                CategoryId = _category.Id
-            };
-            _context.Manipulate(_ => _context.Goods.Add(_goods));
+            CreateGoods();
         }
-
+        
         [When("کد کالا انحصاری’YR-190’با قیمت فروش’4۰۰۰’  با عنوان ‘ماست رامک’  با موجودی ‘۱۰’  ویرایش می کنم")]
         public void When()
         {
-            _updateGoodsDto = new UpdateGoodsDto
-            {
-                Name = "ماست کاله",
-                SalesPrice = 4000,
-                MinimumInventory = 5,
-                Count = 10,
-                UniqueCode = "YK-191",
-                CategoryId = _category.Id
-            };
+            CreateUpdatedGoodsDto();
             _sut.Update(_goods.Id, _updateGoodsDto);
         }
-
+        
         [Then("تنها کالایی با عنوان ‘ماست رامک’  با قیمت فروش’۴۰۰۰’  با کد کالا انحصاری’YR-190’  با موجودی ‘۱۰’  باید وجود داشته باشد")]
         public void Then()
         {
@@ -100,6 +77,42 @@ namespace SuperMarkets.Specs.Goodses
                 , _ => When()
                 , _ => Then()
             );
+        }
+
+        private void CreateOneCategory()
+        {
+            _category = new Category()
+            {
+                Name = "لبنیات"
+            };
+            _context.Manipulate(_ => _context.Categories.Add(_category));
+        }
+        
+        private void CreateGoods()
+        {
+            _goods = new Goods
+            {
+                Name = "ماست رامک",
+                SalesPrice = 2000,
+                MinimumInventory = 5,
+                Count = 10,
+                UniqueCode = "YK-190",
+                CategoryId = _category.Id
+            };
+            _context.Manipulate(_ => _context.Goods.Add(_goods));
+        }
+
+        private void CreateUpdatedGoodsDto()
+        {
+            _updateGoodsDto = new UpdateGoodsDto
+            {
+                Name = "ماست کاله",
+                SalesPrice = 4000,
+                MinimumInventory = 5,
+                Count = 10,
+                UniqueCode = "YK-191",
+                CategoryId = _category.Id
+            };
         }
     }
 }

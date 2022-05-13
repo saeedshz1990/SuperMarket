@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using SuperMarket.Entities;
 using SuperMarket.Infrastructure.Application;
+using SuperMarket.Infrastructure.Test;
 using SuperMarket.Persistence.EF;
 using SuperMarket.Persistence.EF.Categories;
 using SuperMarket.Services.Categories;
@@ -17,7 +18,7 @@ namespace SuperMarkets.Specs.Categories
         IWantTo = " دسته بندی کالا   ",
         InOrderTo = "مدیریت دسته بندی"
     )]
-    public class UpdateCategory :EFDataContextDatabaseFixture
+    public class UpdateCategory : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _context;
         private readonly CategoryRepository _categoryRepository;
@@ -25,7 +26,7 @@ namespace SuperMarkets.Specs.Categories
         private readonly CategoryService _sut;
         private Category _category;
         private UpdateCategoryDto _updateCategoryDto;
-        
+
         public UpdateCategory(ConfigurationFixture configuration) : base(configuration)
         {
             _context = CreateDataContext();
@@ -37,25 +38,16 @@ namespace SuperMarkets.Specs.Categories
         [Given("یک دسته بندی با عنوان 'لبنیات'در فهرست دسته بندی کالا وجود دارد")]
         public void Given()
         {
-            _category = new Category
-            {
-                Name = "لبنیات"
-            };
-            _categoryRepository.Add(_category);
-            _unitOfWork.Commit();
+            CreateCategory();
         }
 
         [When("دسته بندی با عنوان 'لبنیات' را به 'پروتئینی' ویرایش میکنم")]
         public void When()
         {
-            _updateCategoryDto = new UpdateCategoryDto
-            {
-                Name = "پروتئینی"
-            };
-
+            CreateUpdateCategoryDto();
             _sut.Update(_category.Id, _updateCategoryDto);
         }
-        
+
         [Then("یک دسته بندی با عنوان 'پروتئینی' باید در فهرست دسته بندی ها وجود داشته باشد")]
         public void Then()
         {
@@ -69,6 +61,23 @@ namespace SuperMarkets.Specs.Categories
             Given();
             When();
             Then();
+        }
+
+        private void CreateCategory()
+        {
+            _category = new Category
+            {
+                Name = "لبنیات"
+            };
+
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
+        private void CreateUpdateCategoryDto()
+        {
+            _updateCategoryDto = new UpdateCategoryDto
+            {
+                Name = "پروتئینی"
+            };
         }
     }
 }

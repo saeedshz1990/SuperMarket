@@ -36,29 +36,26 @@ namespace SuperMarket.Services.Test.Unit.Categories
         [Fact]
         public void Add_adds_Category_Properly()
         {
-            _dto = CreateCategoryFactory.CreateAddCategoryDto("Dummy");
+            CreateOneDummyCategory();
             _sut.Add(_dto);
             _context.Categories.Should().Contain(_ => _.Name == _dto.Name);
         }
-
+        
         [Fact]
         public void Add_ThrowException_When_NameCategoryIsDuplicated()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneDairyCategory();
 
             _dto = CreateCategoryFactory.CreateAddCategoryDto("لبنیات");
             Action expected = () => _sut.Add(_dto);
-            
+
             expected.Should().ThrowExactly<CategoryNameIsExistException>();
         }
-
-
+        
         [Fact]
         public void Get_gets_OneCategory_properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneDairyCategory();
 
             var expected = _sut.GetById(_category.Id);
 
@@ -68,9 +65,7 @@ namespace SuperMarket.Services.Test.Unit.Categories
         [Fact]
         public void GetAll_returns_all_categories_Properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("Test");
-
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneDairyCategory();
             var expected = _sut.GetAll();
             expected.Should().Contain(_ => _.Name == _category.Name);
         }
@@ -78,8 +73,7 @@ namespace SuperMarket.Services.Test.Unit.Categories
         [Fact]
         public void Delete_deletes_Category_Properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("Test");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneDairyCategory();
             _sut.Delete(_category.Id);
 
             _context.Categories.Count().Should().Be(0);
@@ -89,7 +83,8 @@ namespace SuperMarket.Services.Test.Unit.Categories
         public void Delete_ThrowException_When_CategoryIsNotFound()
         {
             var fakeCategoryId = 200;
-            _category = CreateCategoryFactory.CreateCategoryDto("Test");
+            _category = CreateCategoryFactory
+                .CreateCategoryDto("Test");
             _context.Manipulate(_ => _.Categories.Add(_category));
 
             Action expected = () => _sut.Delete(fakeCategoryId);
@@ -99,38 +94,74 @@ namespace SuperMarket.Services.Test.Unit.Categories
         [Fact]
         public void Update_updates_category_Properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("Test");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneCategoryDto();
 
-            _updateCategoryDto = CreateCategoryFactory.CreateUpdateCategoryDto("UpdatedTest");
+            CreateOneUpdateCategoryDto();
+            var expected = _context
+                .Categories
+                .FirstOrDefault(_ => _.Id == _category.Id);
 
-            _sut.Update(_category.Id, _updateCategoryDto);
-            var expected = _context.Categories.FirstOrDefault(_ => _.Id == _category.Id);
-
-            expected.Name.Should().Be( _updateCategoryDto.Name);
+            expected.Name.Should().Be(_updateCategoryDto.Name);
         }
-
+        
         [Fact]
         public void Update_ThrowException_When_CategoryNameDoesNotExist()
         {
-         _category = CreateCategoryFactory.CreateCategoryDto("Dummy");
-            _context.Manipulate(_ => _.Categories.Add(_category));
-
-            _updateCategoryDto = CreateCategoryFactory.CreateUpdateCategoryDto("Dummy");
+            CreateOneCategory();
+            CreateOneUpdateCategory();
             Action expected = () => _sut.Update(_category.Id, _updateCategoryDto);
-            
+
             expected.Should().ThrowExactly<CategoryNameIsExistException>();
         }
 
         [Fact]
         public void Update_ThrowException_When_CategoryIdDoesNotExist()
         {
-            var fakeCategoryId = 200;
-            _updateCategoryDto = CreateCategoryFactory.CreateUpdateCategoryDto("Dummy");
+            var fakeCategoryId = CreateOneUpdatedCategoryForThrowException();
             Action expected = () => _sut.Update(fakeCategoryId, _updateCategoryDto);
 
             expected.Should().ThrowExactly<CategoryNotFoundException>();
         }
 
+        private int CreateOneUpdatedCategoryForThrowException()
+        {
+            var fakeCategoryId = 200;
+            _updateCategoryDto = CreateCategoryFactory.CreateUpdateCategoryDto("Dummy");
+            return fakeCategoryId;
+        }
+
+        private void CreateOneCategory()
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("Dummy");
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
+
+        private void CreateOneUpdateCategory()
+        {
+            _updateCategoryDto = CreateCategoryFactory.CreateUpdateCategoryDto("Dummy");
+        }
+        private void CreateOneUpdateCategoryDto()
+        {
+            _updateCategoryDto = CreateCategoryFactory
+                .CreateUpdateCategoryDto("UpdatedTest");
+            _sut.Update(_category.Id, _updateCategoryDto);
+        }
+
+        private void CreateOneCategoryDto()
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("Test");
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
+
+        private void CreateOneDummyCategory()
+        {
+            _dto = CreateCategoryFactory.CreateAddCategoryDto("Dummy");
+        }
+
+        private void CreateOneDairyCategory()
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
     }
 }

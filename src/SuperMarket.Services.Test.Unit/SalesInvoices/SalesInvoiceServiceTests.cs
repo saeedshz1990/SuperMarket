@@ -50,39 +50,36 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
         [Fact]
         public void Add_adds_salesInvoice_properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("Dummy");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneDummyCategory();
+            CreateOneGoods();
 
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Goods.Add(_goods));
-
-            _addSalesInvoiceDto = CreateSalesInvoiceFactory.CreateAddSalesInvoice(_goods.Id);
+            CreateAddSalesInvoicesDto();
             _sut.Add(_addSalesInvoiceDto);
 
-            _context.SalesInvoices.Should().Contain(_ => _.GoodsId == _addSalesInvoiceDto.GoodsId);
-            _context.SalesInvoices.Should().Contain(_ => _.Count == _addSalesInvoiceDto.Count);
-            _context.SalesInvoices.Should().Contain(_ => _.SalesPrice == _addSalesInvoiceDto.SalesPrice);
-            _context.SalesInvoices.Should().Contain(_ => _.SalesDate == _addSalesInvoiceDto.SalesDate);
-            _context.SalesInvoices.Should().Contain(_ => _.CustomerName == _addSalesInvoiceDto.CustomerName);
+            _context.SalesInvoices.Should()
+                .Contain(_ => _.GoodsId == _addSalesInvoiceDto.GoodsId);
+            _context.SalesInvoices.Should()
+                .Contain(_ => _.Count == _addSalesInvoiceDto.Count);
+            _context.SalesInvoices.Should()
+                .Contain(_ => _.SalesPrice == _addSalesInvoiceDto.SalesPrice);
+            _context.SalesInvoices.Should()
+                .Contain(_ => _.SalesDate == _addSalesInvoiceDto.SalesDate);
+            _context.SalesInvoices.Should()
+                .Contain(_ => _.CustomerName == _addSalesInvoiceDto.CustomerName);
         }
 
         [Fact]
         public void Delete_deletes_SalesInvoices_properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateYoughertCategory();
+            CreateOneGoods();
 
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Goods.Add(_goods));
-
-            _salesInvoice = CreateSalesInvoiceFactory.CreateSalesInvoice(_goods.Id);
-            _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
-
+            CreateSalesInvoices();
             _sut.Delete(_salesInvoice.Id);
 
-            _context.SalesInvoices.FirstOrDefault(_ => _.Id == _salesInvoice.Id).Should().BeNull();
+            _context.SalesInvoices
+                .FirstOrDefault(_ => _.Id == _salesInvoice.Id).Should().BeNull();
             _context.SalesInvoices.Should().HaveCount(0);
-
         }
 
         [Fact]
@@ -96,37 +93,22 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
         [Fact]
         public void Update_updates_SalesInvoices_Properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateYoughertCategory();
+            CreateOneGoods();
+            CreateSalesInvoices();
 
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Goods.Add(_goods));
-
-            _salesInvoice = CreateSalesInvoiceFactory.CreateSalesInvoice(_goods.Id);
-            _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
-
-            _updateSalesInvoiceDto = CreateSalesInvoiceFactory.CreateUpdateSalesInvoiceDto("SaeedAnsari",
-                5, 2000, DateTime.Now.Date, _goods.Id);
-
+            CreateUpdateSalesInvoice();
             _sut.Update(_salesInvoice.Id, _updateSalesInvoiceDto);
         }
 
         [Fact]
         public void Update_ThrowException_When_SalesInvoiceId_doesNotExist()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateYoughertCategory();
+            CreateOneGoods();
+            CreateSalesInvoices();
 
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Goods.Add(_goods));
-
-            _salesInvoice = CreateSalesInvoiceFactory.CreateSalesInvoice(_goods.Id);
-            _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
-
-            _updateSalesInvoiceDto = CreateSalesInvoiceFactory
-                .CreateUpdateSalesInvoiceDto("SaeedAnsari", 5,
-                    2000, DateTime.Now.Date, _goods.Id);
-
+            CreateUpdateSalesInvoice();
             Action expected = () => _sut.Update(2, _updateSalesInvoiceDto);
 
             expected.Should().ThrowExactly<SalesInvoicesNotExistException>();
@@ -135,15 +117,10 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
         [Fact]
         public void GetAll_gets_all_SalesInvoices_Properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateYoughertCategory();
+            CreateOneGoods();
 
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Goods.Add(_goods));
-
-            _salesInvoice = CreateSalesInvoiceFactory.CreateSalesInvoice(_goods.Id);
-            _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
-
+            CreateSalesInvoices();
             var expected = _sut.GetAll();
 
             expected.Should().HaveCount(1);
@@ -152,6 +129,41 @@ namespace SuperMarket.Services.Test.Unit.SalesInvoices
                                            && _.SalesDate == _salesInvoice.SalesDate
                                            && _.SalesPrice == _salesInvoice.SalesPrice
                                            && _.Count == _salesInvoice.Count);
+        }
+        
+        private void CreateAddSalesInvoicesDto()
+        {
+            _addSalesInvoiceDto = CreateSalesInvoiceFactory.CreateAddSalesInvoice(_goods.Id);
+        }
+
+        private void CreateOneGoods()
+        {
+            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
+            _context.Manipulate(_ => _.Goods.Add(_goods));
+        }
+
+        private void CreateOneDummyCategory()
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("Dummy");
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
+        
+        private void CreateUpdateSalesInvoice()
+        {
+            _updateSalesInvoiceDto = CreateSalesInvoiceFactory.CreateUpdateSalesInvoiceDto("SaeedAnsari",
+                5, 2000, DateTime.Now.Date, _goods.Id);
+        }
+
+        private void CreateYoughertCategory()
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
+
+        private void CreateSalesInvoices()
+        {
+            _salesInvoice = CreateSalesInvoiceFactory.CreateSalesInvoice(_goods.Id);
+            _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
         }
     }
 }

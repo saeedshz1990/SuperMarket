@@ -38,32 +38,84 @@ namespace SuperMarkets.Specs.SalesInvoices
 
         private readonly CategoryRepository _categoryRepository;
         private readonly GoodsRepository _goodsRepository;
-        
+
         public UpdateSalesInvoice(ConfigurationFixture configuration) : base(configuration)
         {
             _context = CreateDataContext();
             _unitOfWork = new EFUnitOfWork(_context);
             _salesInvoiceRepository = new EFSalesInvoiceRepository(_context);
-            _sut = new SalesInvoiceAppService(_unitOfWork, _salesInvoiceRepository,  _goodsRepository);
+            _sut = new SalesInvoiceAppService(_unitOfWork, _salesInvoiceRepository, _goodsRepository);
             _categoryRepository = new EFCategoryRepository(_context);
         }
 
         [Given("دسته بندی کالا با عنوان ‘لبنیات ‘  تعریف می کنیم")]
         public void Given()
-        {   
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+        {
+            CreateCategory();
         }
 
         [And("کالایی با عنوان ‘ماست رامک’  با قیمت فروش ‘۲۰۰۰’  با کد کالا انحصاری’YR-190’ با موجودی ‘۱۰’  تعریف می کنم")]
         public void GivenFirstAnd()
         {
+            CreateGoods();
+        }
+
+        [And("کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  می فروشیم")]
+        public void GivenSecondAnd()
+        {
+            CreateSalesInvoices();
+        }
+
+        [When("کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘4’  ویرایش می کنیم")]
+        public void When()
+        {
+            var salesInvoice = CreateUpdateSalesInvicesDto();
+            _sut.Update(salesInvoice.Id, _updateSalesInvoiceDto);
+        }
+
+        [Then(" فروش کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  در لیست فروش قرار دارد")]
+        public void Then()
+        {
+            _context.SalesInvoices.Any(_ => _.GoodsId == _goods.Id
+                                        && _.Count == _updateSalesInvoiceDto.Count)
+                                  .Should()
+                                  .BeTrue();
+        }
+
+        [And(" تنها کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  می فروشیم")]
+        public void ThenAnd()
+        {
+            _context.SalesInvoices
+                .Should()
+                .Contain(_ => _.GoodsId == _goods.Id
+                              && _.Count == _updateSalesInvoiceDto.Count);
+        }
+
+        [Fact]
+        public void Run()
+        {
+            Runner.RunScenario(
+                _ => Given()
+                , _ => GivenFirstAnd()
+                , _ => GivenSecondAnd()
+                , _ => When()
+                , _ => Then()
+                , _ => ThenAnd());
+        }
+
+        private void CreateCategory()
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
+
+        private void CreateGoods()
+        {
             _goods = CreateGoodsFactory.CreateGoods(_category.Id);
             _context.Manipulate(_ => _.Goods.Add(_goods));
         }
-        
-        [And("کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  می فروشیم")]
-        public void GivenSecondAnd()
+
+        private void CreateSalesInvoices()
         {
             _salesInvoice = new SalesInvoice
             {
@@ -75,9 +127,7 @@ namespace SuperMarkets.Specs.SalesInvoices
             };
             _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
         }
-        
-        [When("کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘4’  ویرایش می کنیم")]
-        public void When()
+        private SalesInvoice CreateUpdateSalesInvicesDto()
         {
             _updateSalesInvoiceDto = new UpdateSalesInvoiceDto
             {
@@ -87,34 +137,8 @@ namespace SuperMarkets.Specs.SalesInvoices
                 GoodsId = _goods.Id,
                 Count = 4
             };
-           var salesInvoice= _salesInvoiceRepository.FindById(_salesInvoice.Id);
-            _sut.Update(salesInvoice.Id,_updateSalesInvoiceDto);
-        }
-
-        [Then(" فروش کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  در لیست فروش قرار دارد")]
-        public void Then()
-        {
-            _context.SalesInvoices.Any(_ => _.GoodsId == _goods.Id
-                                        && _.Count == _updateSalesInvoiceDto.Count).Should().BeTrue();
-        }
-
-        [And(" تنها کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  می فروشیم")]
-        public void ThenAnd()
-        {
-            _context.SalesInvoices
-                .Should().Contain(_ => _.GoodsId == _goods.Id && _.Count == _updateSalesInvoiceDto.Count);
-        }
-
-        [Fact]
-        public void Run()
-        {
-            Runner.RunScenario(
-                _ => Given()
-                ,_=>GivenFirstAnd()
-                , _ => GivenSecondAnd()
-                , _ => When()
-                , _ => Then()
-                , _ => ThenAnd());
+            var salesInvoice = _salesInvoiceRepository.FindById(_salesInvoice.Id);
+            return salesInvoice;
         }
     }
-} 
+}

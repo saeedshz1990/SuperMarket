@@ -59,35 +59,19 @@ namespace SuperMarkets.Specs.EntryDocuments
         [Given("دسته بندی کالا با عنوان ‘لبنیات ‘  تعریف می کنیم")]
         public void Given()
         {
-            _category = new Category { Name = "لبنیات" };
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneCategory();
         }
 
         [And("کالایی با عنوان ‘ماست رامک’  با قیمت فروش’۲۰۰۰’  با کد کالا انحصاری’YR-190’   با موجودی ‘۱۰’  تعریف می کنم")]
         public void GivenFirstAnd()
         {
-            _goods = new Goods
-            {
-                Name = "ماست موسیر",
-                CategoryId = _category.Id,
-                Count = 10,
-                SalesPrice = 2000,
-                UniqueCode = "YR-190",
-                MinimumInventory = 5,
-            };
-            _context.Manipulate(_ => _.Goods.Add(_goods));
+           CreateOneGoods();
         }
 
-        [When("کالایی با کد ‘۱۰۰’  با قیمت خرید ‘۱۰۰۰’  با موجودی ‘۷’ درتاریخ ‘ 01/01/1400‘ وارد میکنم")]
+        [And("کالایی با کد ‘۱۰۰’  با قیمت خرید ‘۱۰۰۰’  با موجودی ‘۷’ درتاریخ ‘ 01/01/1400‘ وارد میکنم")]
         public void GivenSecondAnd()
         {
-            _addEntryDocumentDto = new AddEntryDocumentDto
-            {
-                GoodsId = _goods.Id,
-                BuyPrice = 2000,
-                DateBuy = DateTime.Now.Date,
-                GoodsCount = 5
-            };
+            CreateAddEntryDocumentDto();
             _sut.Add(_addEntryDocumentDto);
         }
 
@@ -113,5 +97,35 @@ namespace SuperMarkets.Specs.EntryDocuments
             Then();
 
         }
+        private void CreateOneCategory()
+        {
+            _category = new Category { Name = "لبنیات" };
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
+
+        private void CreateOneGoods()
+        {
+            _goods = new Goods
+            {
+                Name = "ماست رامک",
+                CategoryId = _category.Id,
+                Count = 10,
+                SalesPrice = 2000,
+                UniqueCode = "YR-190",
+                MinimumInventory = 5,
+                EntryDocumentId = 1
+            };
+            _context.Manipulate(_ => _.Goods.Add(_goods));
+        }
+        private void CreateAddEntryDocumentDto()
+        {
+            _addEntryDocumentDto = new AddEntryDocumentDto
+            {
+                GoodsId = _goods.Id,
+                DateBuy = DateTime.Now.Date,
+                GoodsCount = 7
+            };
+        }
+
     }
 }

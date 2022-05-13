@@ -43,28 +43,13 @@ namespace SuperMarkets.Specs.Categories
         [Given("دسته بندی با عنوان 'لبنیات'در فهرست دسته بندی کالا وجود دارد")]
         public void Given()
         {
-            _category = new Category
-            {
-                Name = "لبنیات"
-            };
-
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateCategory();
         }
 
         [And("کالایی با عنوان ‘ماست رامک’  با قیمت فروش’۲۰۰۰’  با کد کالا انحصاری’YR-190’   با موجودی ‘۱۰’ در دسته بندی کالا موجود می باشد")]
         public void GivenAnd()
         {
-            _goods = new Goods
-            {
-                Name = "ماست رامک",
-                SalesPrice = 2000,
-                MinimumInventory = 5,
-                Count = 10,
-                UniqueCode = "YR-190",
-                CategoryId = _category.Id,
-            };
-
-            _context.Manipulate(_ => _.Goods.Add(_goods));
+            CreateGoods();
         }
 
         [When("دسته بندی با عنوان 'لبنیات' را حذف میکنیم")]
@@ -77,7 +62,6 @@ namespace SuperMarkets.Specs.Categories
         public void Then()
         {
             _context.Categories.Should().HaveCount(1);
-
         }
 
         [And("خطایی با عنوان ‘امکان حذف بدلیل وجود کالا در این دسته امکان پذیر نمی باشد’  باید رخ دهد")]
@@ -94,6 +78,30 @@ namespace SuperMarkets.Specs.Categories
             When();
             Then();
             ThenAnd();
+        }
+
+        private void CreateCategory()
+        {
+            _category = new Category
+            {
+                Name = "لبنیات"
+            };
+
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
+
+        private void CreateGoods()
+        {
+            _goods = new Goods
+            {
+                Name = "ماست رامک",
+                SalesPrice = 2000,
+                MinimumInventory = 5,
+                Count = 10,
+                UniqueCode = "YR-190",
+                CategoryId = _category.Id,
+            };
+            _context.Manipulate(_ => _.Goods.Add(_goods));
         }
     }
 }

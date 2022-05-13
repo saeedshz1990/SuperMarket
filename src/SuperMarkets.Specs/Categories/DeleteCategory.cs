@@ -39,12 +39,7 @@ namespace SuperMarkets.Specs.Categories
         [Given("دسته بندی با عنوان 'لبنیات'در فهرست دسته بندی کالا وجود دارد")]
         public void Given()
         {
-            _category = new Category
-            {
-                Name = "لبنیات"
-            };
-
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateCategory();
         }
         
         [When("دسته بندی با عنوان 'لبنیات' را حذف میکنیم")]
@@ -67,6 +62,16 @@ namespace SuperMarkets.Specs.Categories
             Given();
             When();
             Then();
+        }
+
+        private void CreateCategory()
+        {
+            _category = new Category
+            {
+                Name = "لبنیات"
+            };
+
+            _context.Manipulate(_ => _.Categories.Add(_category));
         }
     }
 }

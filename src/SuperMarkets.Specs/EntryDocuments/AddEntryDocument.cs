@@ -60,12 +60,61 @@ namespace SuperMarkets.Specs.EntryDocuments
         [Given("دسته بندی کالا با عنوان ‘لبنیات ‘  تعریف می کنیم")]
         public void Given()
         {
-            _category = new Category { Name = "لبنیات" };
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneCategory();
         }
 
         [And("کالایی با عنوان ‘ماست رامک’  با قیمت خرید’۲۰۰۰’  با کد کالا انحصاری’YR-190’   با موجودی ‘۱۰’  تعریف می کنم")]
         public void GivenAnd()
+        {
+            CreateOneGoods();
+        }
+
+        [When("کالایی با کد ‘۱۰۰’  با قیمت خرید ‘۱۰۰۰’  با موجودی ‘۷’ درتاریخ ‘ 01/01/1400‘ وارد میکنم")]
+        public void When()
+        {
+            CreateAddEntryDocumentDto();
+            _sut.Add(_addEntryDocumentDto);
+        }
+
+        [Then("سند کالایی با عنوان ‘ماست رامک’  با قیمت خرید ‘۱۰۰۰’  با موجودی ‘۷’ درتاریخ ‘ 01/01/1400‘ باید وجود داشته باشد")]
+        public void Then()
+        {
+            _context.EntryDocuments.Should()
+                .Contain(_ => _.GoodsId == _goods.Id);
+            _context.EntryDocuments.Should()
+                .Contain(_ => _.BuyPrice == _addEntryDocumentDto.BuyPrice);
+            _context.EntryDocuments.Should()
+                .Contain(_ => _.DateBuy == _addEntryDocumentDto.DateBuy.Date);
+            _context.EntryDocuments.Should()
+                .Contain(_ => _.GoodsCount == _addEntryDocumentDto.GoodsCount);
+        }
+
+        [Fact]
+        public void Run()
+        {
+            Given();
+            GivenAnd();
+            When();
+            Then();
+        }
+
+        private void CreateAddEntryDocumentDto()
+        {
+            _addEntryDocumentDto = new AddEntryDocumentDto
+            {
+                GoodsId = _goods.Id,
+                DateBuy = DateTime.Now.Date,
+                GoodsCount = 7
+            };
+        }
+
+        private void CreateOneCategory()
+        {
+            _category = new Category { Name = "لبنیات" };
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
+
+        private void CreateOneGoods()
         {
             _goods = new Goods
             {
@@ -78,37 +127,6 @@ namespace SuperMarkets.Specs.EntryDocuments
                 EntryDocumentId = 1
             };
             _context.Manipulate(_ => _.Goods.Add(_goods));
-        }
-
-        [When("کالایی با کد ‘۱۰۰’  با قیمت خرید ‘۱۰۰۰’  با موجودی ‘۷’ درتاریخ ‘ 01/01/1400‘ وارد میکنم")]
-        public void When()
-        {
-            _addEntryDocumentDto = new AddEntryDocumentDto
-            {
-
-                GoodsId = _goods.Id,
-                DateBuy = DateTime.Now.Date,
-                GoodsCount = 7 
-            };
-            _sut.Add(_addEntryDocumentDto);
-        }
-
-        [Then("سند کالایی با عنوان ‘ماست رامک’  با قیمت خرید ‘۱۰۰۰’  با موجودی ‘۷’ درتاریخ ‘ 01/01/1400‘ باید وجود داشته باشد")]
-        public void Then()
-        {
-            _context.EntryDocuments.Should().Contain(_ => _.GoodsId == _goods.Id);
-            _context.EntryDocuments.Should().Contain(_ => _.BuyPrice == _addEntryDocumentDto.BuyPrice);
-            _context.EntryDocuments.Should().Contain(_ => _.DateBuy == _addEntryDocumentDto.DateBuy.Date);
-            _context.EntryDocuments.Should().Contain(_ => _.GoodsCount == _addEntryDocumentDto.GoodsCount);
-        }
-
-        [Fact]
-        public void Run()
-        {
-            Given();
-            GivenAnd();
-            When();
-            Then();
         }
     }
 }

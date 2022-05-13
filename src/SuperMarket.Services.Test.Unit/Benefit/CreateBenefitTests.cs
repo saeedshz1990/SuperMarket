@@ -45,23 +45,16 @@ namespace SuperMarket.Services.Test.Unit.Benefit
             _categoryRepository = new EFCategoryRepository(_context);
             _salesInvoiceRepository = new EFSalesInvoiceRepository(_context);
             _sut = new BenefitCalculateAppService(_unitOfWork, _categoryRepository,
-                _goodsRepository,_entryDocumentRepository,_salesInvoiceRepository);            
+                _goodsRepository, _entryDocumentRepository, _salesInvoiceRepository);
         }
 
         [Fact]
         public void CalculateGoods_calculateGoodses_all_in_Category_properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_=>_.Categories.Add(_category));
-
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_=>_.Goods.Add(_goods));
-
-            _entryDocument = CreateEntryDocumentsFactory.CreateEntryDocumentDto(_goods.Id);
-            _context.Manipulate(_=>_.EntryDocuments.Add(_entryDocument));
-
-            _salesInvoice = CreateSalesInvoiceFactory.CreateSalesInvoice(_goods.Id);
-            _context.Manipulate(_=>_.SalesInvoices.Add(_salesInvoice));
+            CreateOneCategory();
+            CreateOneGoods();
+            CreateOneEntryDocument();
+            CreateOneSalesInvoices();
 
             var expected = _sut.BenefitGoodsCalculate(_goods.Id);
             expected.Should().Be(0);
@@ -70,21 +63,40 @@ namespace SuperMarket.Services.Test.Unit.Benefit
         [Fact]
         public void CategoryBenefit_categoriesBenefit_allGoodses_properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneCategory();
 
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Goods.Add(_goods));
+            CreateOneGoods();
 
-            _entryDocument = CreateEntryDocumentsFactory.CreateEntryDocumentDto(_goods.Id);
-            _context.Manipulate(_ => _.EntryDocuments.Add(_entryDocument));
+            CreateOneEntryDocument();
 
-            _salesInvoice = CreateSalesInvoiceFactory.CreateSalesInvoice(_goods.Id);
-            _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
+            CreateOneSalesInvoices();
 
             var expected = _sut.BenefitCategoryCalculate(_category.Id, _goods.Id);
             expected.Should().Be(0);
         }
 
+        private void CreateOneSalesInvoices()
+        {
+            _salesInvoice = CreateSalesInvoiceFactory.CreateSalesInvoice(_goods.Id);
+            _context.Manipulate(_ => _.SalesInvoices.Add(_salesInvoice));
+        }
+
+        private void CreateOneEntryDocument()
+        {
+            _entryDocument = CreateEntryDocumentsFactory.CreateEntryDocumentDto(_goods.Id);
+            _context.Manipulate(_ => _.EntryDocuments.Add(_entryDocument));
+        }
+
+        private void CreateOneGoods()
+        {
+            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
+            _context.Manipulate(_ => _.Goods.Add(_goods));
+        }
+
+        private void CreateOneCategory()
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
     }
 }

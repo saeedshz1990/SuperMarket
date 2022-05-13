@@ -41,32 +41,19 @@ namespace SuperMarkets.Specs.Categories
         [Given("دسته بندی با عنوان 'لبنیات'در فهرست دسته بندی کالا وجود دارد")]
         public void Given()
         {
-            _category = new Category
-            {
-                Name = "لبنیات"
-            };
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateCategory();
         }
 
         [And("دسته بندی با عنوان 'خشکبار’ 'در فهرست دسته بندی کالا وجود دارد")]
         public void GivenAnd()
         {
-            _category = new Category
-            {
-                Name = "خشکبار’ "
-            };
-
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneCategory();
         }
-
+        
         [When("دسته بندی با عنوان 'خشکبار’ ' را به 'لبنیات'ویرایش میکنم")]
         public void When()
         {
-            _updateCategoryDto = new UpdateCategoryDto
-            {
-                Name = "لبنیات"
-            };
-
+            CreateUpdateCategoryDto();
             expected = () => _sut.Update(_category.Id, _updateCategoryDto);
         }
         
@@ -91,6 +78,34 @@ namespace SuperMarkets.Specs.Categories
             When();
             Then();
             ThenAnd();
+        }
+        
+        private void CreateCategory()
+        {
+            _category = new Category
+            {
+                Name = "لبنیات"
+            };
+
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
+        
+        private void CreateUpdateCategoryDto()
+        {
+            _updateCategoryDto = new UpdateCategoryDto
+            {
+                Name = "لبنیات"
+            };
+        }
+
+        private void CreateOneCategory()
+        {
+            _category = new Category
+            {
+                Name = "خشکبار’ "
+            };
+
+            _context.Manipulate(_ => _.Categories.Add(_category));
         }
     }
 }

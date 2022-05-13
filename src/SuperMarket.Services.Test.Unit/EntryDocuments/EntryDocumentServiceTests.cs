@@ -42,79 +42,102 @@ namespace SuperMarket.Services.Test.Unit.EntryDocuments
         [Fact]
         public void Add_adds_EntryDocument_Properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneCategory();
+            CreateOneGoods();
 
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Goods.Add(_goods));
-
-            _addEntryDocumentDto = CreateEntryDocumentsFactory
-                .CreateAddEntryDocumentDto(_goods.Id);
+            CreateOneEntryDocumentDto();
             _sut.Add(_addEntryDocumentDto);
 
-            _context.EntryDocuments.Should().Contain(_ => _.GoodsId == _addEntryDocumentDto.GoodsId);
-            _context.EntryDocuments.Should().Contain(_ => _.BuyPrice == _addEntryDocumentDto.BuyPrice);
-            _context.EntryDocuments.Should().Contain(_ => _.BuyPrice == _addEntryDocumentDto.BuyPrice);
-            _context.EntryDocuments.Should().Contain(_ => _.DateBuy == _addEntryDocumentDto.DateBuy);
-            _context.EntryDocuments.Should().Contain(_ => _.GoodsCount == _addEntryDocumentDto.GoodsCount);
+            _context.EntryDocuments.Should()
+                .Contain(_ => _.GoodsId == _addEntryDocumentDto.GoodsId);
+            _context.EntryDocuments.Should()
+                .Contain(_ => _.BuyPrice == _addEntryDocumentDto.BuyPrice);
+            _context.EntryDocuments.Should()
+                .Contain(_ => _.BuyPrice == _addEntryDocumentDto.BuyPrice);
+            _context.EntryDocuments.Should()
+                .Contain(_ => _.DateBuy == _addEntryDocumentDto.DateBuy);
+            _context.EntryDocuments.Should()
+                .Contain(_ => _.GoodsCount == _addEntryDocumentDto.GoodsCount);
         }
-
+        
         [Fact]
         public void AddThrowException_When_GoodsId_NotFound_In_EntryDocuments()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneCategory();
+            CreateOneGoods();
+            CreateOneEntryDocument();
 
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Goods.Add(_goods));
-
-            var addEnterDocumentSecond = CreateEntryDocumentsFactory.CreateEntryDocumentDto(_goods.Id);
-            _context.Manipulate(_ => _.EntryDocuments.Add(addEnterDocumentSecond));
-            
-            _addEntryDocumentDto = CreateEntryDocumentsFactory.CreateAddEntryDocumentDto(_goods.Id);
+            CreateOneEntryDocumentDto();
 
             Action expected = () => _sut.Add(_addEntryDocumentDto);
             expected.Should().ThrowExactly<GoodIdNotFoundException>();
         }
-
+        
         [Fact]
         public void GetAll_getAll_EntryDocument_properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneCategory();
+            CreateOneGoods();
 
-            _goods = _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Goods.Add(_goods));
-
-            _entryDocument = CreateEntryDocumentsFactory.CreateEntryDocumentDto(_goods.Id);
-            _context.Manipulate(_ => _.EntryDocuments.Add(_entryDocument));
-
+            CreateAEntryDocument();
             var expected = _sut.GetAll();
 
             expected.Should().HaveCount(1);
-            _context.EntryDocuments.Should().Contain(_ => _.BuyPrice == _entryDocument.BuyPrice);
-            _context.EntryDocuments.Should().Contain(_ => _.DateBuy == _entryDocument.DateBuy);
-            _context.EntryDocuments.Should().Contain(_ => _.GoodsCount == _entryDocument.GoodsCount);
-            _context.EntryDocuments.Should().Contain(_ => _.GoodsId == _entryDocument.GoodsId);
+            _context.EntryDocuments.Should()
+                .Contain(_ => _.BuyPrice == _entryDocument.BuyPrice);
+            _context.EntryDocuments.Should()
+                .Contain(_ => _.DateBuy == _entryDocument.DateBuy);
+            _context.EntryDocuments.Should()
+                .Contain(_ => _.GoodsCount == _entryDocument.GoodsCount);
+            _context.EntryDocuments.Should()
+                .Contain(_ => _.GoodsId == _entryDocument.GoodsId);
         }
-
+        
         [Fact]
         public void Update_updates_EntryDocument_properly()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateOneCategory();
+            CreateOneGoods();
 
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Goods.Add(_goods));
+            CreateAEntryDocument();
 
-            _entryDocument = CreateEntryDocumentsFactory.CreateEntryDocument(_goods.Id,
-                5, 12000, DateTime.Now.Date);
-            _context.Manipulate(_ => _.EntryDocuments.Add(_entryDocument));
+            CreateUpdateEntryDocumentDto();
+        }
 
+        private void CreateUpdateEntryDocumentDto()
+        {
             _updateEntryDocumentDto = CreateEntryDocumentsFactory
                 .CreateUpdateEntryDocumentDto(_entryDocument.Id, 5);
             _sut.Update(_entryDocument.Id, _updateEntryDocumentDto);
+        }
 
+        private void CreateOneEntryDocumentDto()
+        {
+            _addEntryDocumentDto = CreateEntryDocumentsFactory
+                .CreateAddEntryDocumentDto(_goods.Id);
+        }
+
+        private void CreateOneGoods()
+        {
+            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
+            _context.Manipulate(_ => _.Goods.Add(_goods));
+        }
+
+        private void CreateOneCategory()
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
+
+        private void CreateOneEntryDocument()
+        {
+            var addEnterDocumentSecond = CreateEntryDocumentsFactory.CreateEntryDocumentDto(_goods.Id);
+            _context.Manipulate(_ => _.EntryDocuments.Add(addEnterDocumentSecond));
+        }
+        private void CreateAEntryDocument()
+        {
+            _entryDocument = CreateEntryDocumentsFactory.CreateEntryDocumentDto(_goods.Id);
+            _context.Manipulate(_ => _.EntryDocuments.Add(_entryDocument));
         }
     }
 }

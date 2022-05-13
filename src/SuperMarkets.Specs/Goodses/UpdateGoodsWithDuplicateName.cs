@@ -47,57 +47,26 @@ namespace SuperMarkets.Specs.Goodses
         [Given("دسته بندی کالا با عنوان ‘لبنیات ‘  تعریف می کنیم")]
         public void Given()
         {
-            _category = new Category()
-            {
-                Name = "پروتئینی"
-
-            };
-            _context.Manipulate(_ => _context.Categories.Add(_category));
+            CreateOneCategory();
         }
 
         [And("کالایی با عنوان ‘ماست رامک’  با قیمت فروش’۲۰۰۰’  با کد کالا انحصاری’YR-190’   با موجودی ‘۱۰’  تعریف می کنم")]
         public void GivenFirstAnd()
         {
-            _goods = new Goods
-            {
-                Name = "ماست رامک",
-                SalesPrice = 2000,
-                MinimumInventory = 5,
-                Count = 10,
-                UniqueCode = "YK-190",
-                CategoryId = _category.Id
-            };
-            _context.Manipulate(_ => _context.Goods.Add(_goods));
+           CreateGoods();
         }
 
         [And("کالایی با عنوان ‘ماست قنبرزاده  با قیمت فروش’۳۰۰۰’  با کد کالا انحصاری’YR-191’   با موجودی ‘۱۵’  تعریف می کنم")]
         public void GivenSecondAnd()
         {
-            _secondGoods = new Goods
-            {
-                Name = "ماست قنبرزاده",
-                SalesPrice = 3000,
-                MinimumInventory = 5,
-                Count = 15,
-                UniqueCode = "YK-191",
-                CategoryId = _category.Id
-            };
-            _context.Manipulate(_ => _context.Goods.Add(_secondGoods));
+            CreateSecondGoods();
         }
         
         [When("کد کالا انحصاری’YR-191’   با قیمت فروش’۴۰۰۰’  با عنوان ‘ماست رامک’    با موجودی ‘۱۰’  ویرایش می کنم")]
         public void When()
         {
-            _updateGoodsDto = new UpdateGoodsDto
-            {
-                Name = "ماست قنبرزاده",
-                SalesPrice = 3000,
-                MinimumInventory = 5,
-                Count = 15,
-                UniqueCode = "YK-191",
-                CategoryId = _category.Id
-            };
-             expected = () => _sut.Update(_secondGoods.Id, _updateGoodsDto);
+            CreateUpdateGoodsDto();
+            expected = () => _sut.Update(_secondGoods.Id, _updateGoodsDto);
         }
         
         [Then("کالایی با عنوان ‘ماست قنبرزاده  با قیمت فروش’۳۰۰۰’  با کد کالا انحصاری’YR-191’   با موجودی ‘۱۵’ باید وجود داشته باشد")]
@@ -121,6 +90,55 @@ namespace SuperMarkets.Specs.Goodses
             When();
             Then();
             ThenAnd();
+        }
+
+        private void CreateOneCategory()
+        {
+            _category = new Category()
+            {
+                Name = "لبنیات"
+            };
+            _context.Manipulate(_ => _context.Categories.Add(_category));
+        }
+
+        private void CreateGoods()
+        {
+            _goods = new Goods
+            {
+                Name = "ماست رامک",
+                SalesPrice = 2000,
+                MinimumInventory = 5,
+                Count = 10,
+                UniqueCode = "YK-190",
+                CategoryId = _category.Id
+            };
+            _context.Manipulate(_ => _context.Goods.Add(_goods));
+        }
+
+        private void CreateSecondGoods()
+        {
+            _secondGoods = new Goods
+            {
+                Name = "ماست قنبرزاده",
+                SalesPrice = 3000,
+                MinimumInventory = 5,
+                Count = 15,
+                UniqueCode = "YK-191",
+                CategoryId = _category.Id
+            };
+            _context.Manipulate(_ => _context.Goods.Add(_secondGoods));
+        }
+        private void CreateUpdateGoodsDto()
+        {
+            _updateGoodsDto = new UpdateGoodsDto
+            {
+                Name = "ماست قنبرزاده",
+                SalesPrice = 3000,
+                MinimumInventory = 5,
+                Count = 15,
+                UniqueCode = "YK-191",
+                CategoryId = _category.Id
+            };
         }
     }
 }

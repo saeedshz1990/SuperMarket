@@ -43,11 +43,7 @@ namespace SuperMarkets.Specs.Goodses
         [Given("دسته بندی کالا با عنوان ‘لبنیات ‘  تعریف می کنیم")]
         public void Given()
         {
-            _category = new Category()
-            {
-                Name = "لبنیات"
-            };
-            _context.Manipulate(_ => _context.Categories.Add(_category));
+            CreateOneCategory();
         }
 
         [And("هیچ کالایی در دسته بندی 'لبنیات' وجود ندارد")]
@@ -59,28 +55,26 @@ namespace SuperMarkets.Specs.Goodses
         [When("کالایی با عنوان ‘ماست رامک’  با قیمت فروش’۲۰۰۰’  با کد کالا انحصاری’YR-190’   با موجودی ‘۱۰’  تعریف می کنمم")]
         public void When()
         {
-            _addGoodsDto = new AddGoodsDto()
-            {
-                Name = "ماست رامک",
-                SalesPrice = 2000,
-                MinimumInventory = 5,
-                Count = 10,
-                UniqueCode = "YR-190",
-                CategoryId = _category.Id
-            };
+            CreateAddGoodsDto();
             _sut.Add(_addGoodsDto);
         }
-        
+
         [Then("کالایی با عنوان ‘ماست رامک’  با قیمت فروش’۲۰۰۰’  با کد کالا انحصاری’YR-190’   با موجودی ‘۱۰’  در فهرست دسته بندی کالا باید وجود داشته باشد")]
         public void Then()
         {
             _context.Goods.Count().Should().Be(1);
-            _context.Goods.Should().Contain(_ => _.Name == _addGoodsDto.Name);
-            _context.Goods.Should().Contain(_ => _.CategoryId == _addGoodsDto.CategoryId);
-            _context.Goods.Should().Contain(_ => _.Count == _addGoodsDto.Count);
-            _context.Goods.Should().Contain(_ => _.UniqueCode == _addGoodsDto.UniqueCode);
-            _context.Goods.Should().Contain(_ => _.SalesPrice == _addGoodsDto.SalesPrice);
-            _context.Goods.Should().Contain(_ => _.MinimumInventory == _addGoodsDto.MinimumInventory);
+            _context.Goods.Should()
+                .Contain(_ => _.Name == _addGoodsDto.Name);
+            _context.Goods.Should()
+                .Contain(_ => _.CategoryId == _addGoodsDto.CategoryId);
+            _context.Goods.Should()
+                .Contain(_ => _.Count == _addGoodsDto.Count);
+            _context.Goods.Should()
+                .Contain(_ => _.UniqueCode == _addGoodsDto.UniqueCode);
+            _context.Goods.Should()
+                .Contain(_ => _.SalesPrice == _addGoodsDto.SalesPrice);
+            _context.Goods.Should()
+                .Contain(_ => _.MinimumInventory == _addGoodsDto.MinimumInventory);
         }
 
         [Fact]
@@ -90,6 +84,28 @@ namespace SuperMarkets.Specs.Goodses
             GivenAnd();
             When();
             Then();
+        }
+
+        private void CreateOneCategory()
+        {
+            _category = new Category()
+            {
+                Name = "لبنیات"
+            };
+            _context.Manipulate(_ => _context.Categories.Add(_category));
+        }
+
+        private void CreateAddGoodsDto()
+        {
+            _addGoodsDto = new AddGoodsDto()
+            {
+                Name = "ماست رامک",
+                SalesPrice = 2000,
+                MinimumInventory = 5,
+                Count = 10,
+                UniqueCode = "YR-190",
+                CategoryId = _category.Id
+            };
         }
     }
 }

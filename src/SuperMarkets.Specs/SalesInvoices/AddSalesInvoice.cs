@@ -52,28 +52,19 @@ namespace SuperMarkets.Specs.SalesInvoices
         [Given("دسته بندی کالا با عنوان ‘لبنیات ‘  تعریف می کنیم")]
         public void Given()
         {
-            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
-            _context.Manipulate(_ => _.Categories.Add(_category));
+            CreateCategory();
         }
-
+        
         [And("کالایی با عنوان ‘ماست رامک’  با قیمت فروش ‘۲۰۰۰’  با کد کالا انحصاری’YR-190’ با موجودی ‘۱۰’  تعریف می کنم")]
         public void GivenAnd()
         {
-            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
-            _context.Manipulate(_ => _.Goods.Add(_goods));
+            CreateGoods();
         }
-
+        
         [When("فرض می کنیم : کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  می فروشیم")]
         public void When()
         {
-            _addSalesInvoiceDto = new AddSalesInvoiceDto
-            {
-                CustomerName = "Saeed Ansari",
-                SalesDate = DateTime.Now.Date,
-                SalesPrice = 2000,
-                GoodsId = _goods.Id,
-                Count = 3
-            };
+            CreateAddSalesInvoicesDto();
             _sut.Add(_addSalesInvoiceDto);
         }
         
@@ -83,7 +74,7 @@ namespace SuperMarkets.Specs.SalesInvoices
             _context.SalesInvoices.Count(_ => _.GoodsId == _goods.Id && _.Count == _goods.Count);
         }
 
-        [When("تنها کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  می فروشیم")]
+        [And("تنها کالایی با کد ‘1’  با قیمت فروش’۲۰۰۰’  در تاریخ ‘ 01/01/1400‘ با تعداد ‘۲’  می فروشیم")]
         public void ThenAnd()
         {
             _context.SalesInvoices.Should().HaveCount(1);
@@ -99,6 +90,28 @@ namespace SuperMarkets.Specs.SalesInvoices
                 , _ => Then()
                 , _ => ThenAnd());
 
+        }
+
+        private void CreateCategory()
+        {
+            _category = CreateCategoryFactory.CreateCategoryDto("لبنیات");
+            _context.Manipulate(_ => _.Categories.Add(_category));
+        }
+        private void CreateGoods()
+        {
+            _goods = CreateGoodsFactory.CreateGoods(_category.Id);
+            _context.Manipulate(_ => _.Goods.Add(_goods));
+        }
+        private void CreateAddSalesInvoicesDto()
+        {
+            _addSalesInvoiceDto = new AddSalesInvoiceDto
+            {
+                CustomerName = "Saeed Ansari",
+                SalesDate = DateTime.Now.Date,
+                SalesPrice = 2000,
+                GoodsId = _goods.Id,
+                Count = 3
+            };
         }
     }
 }
